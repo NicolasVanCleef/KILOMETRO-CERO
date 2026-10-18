@@ -1,0 +1,14 @@
+# Código viejo, solo de referencia (no se sube)
+_referencia/
+
+# Configuración local de Claude Code
+.claude/
+
+# Archivos temporales de Word
+~$*
+
+# Sistema operativo / editores
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
