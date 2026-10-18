@@ -83,6 +83,7 @@ código anterior quedó archivado en `_referencia/`; la documentación de `docs/
 | R26 | 05/10 | yo quiero que me divivdes la app en partes para ir haciendo por partes y cada vez que yo te digo una prompt para hacer esa parte en especifico la anotes en un documento para ir registrando las prompts. | Parte 3 de este documento: división de la app en 10 partes, con una tabla por parte para registrar sus prompts |
 | R27 | 05/10 | fue una correcion *(sobre la nota del profesor "valoracion mer va sobre actividad", de una clase anterior)* | MER corregido: `VALORACION` se relaciona con `ACTIVIDAD` y `TURISTA` (ya no con `RESERVA`); haber participado pasa a ser regla de negocio; diagramas `MER.png/svg` y `MER_Chen.png/svg` regenerados |
 | R28 | 05/10 | el registro de prompts lo podes hacer en un docs asi lo voy viendo | Copia de este registro en Claude Docs (https://claude.ai/code/artifact/66e4060a-fb0a-48a3-979a-45143267dfff), que pasa a ser el registro principal |
+| R29 | 18/10 | https://claude.ai/artifact/FiLQ3AeY1VhwygNpKU6Wgo   quiero que me hagas algo de este estilo, pero OBVIAMENTE aplicado para nuestro proyecto. Fijate las funcionalidades que tiene | Muestra navegable propia de Kilómetro Cero (visitante, turista, prestador, administrador y API pública, con datos de ejemplo y acciones que funcionan en el navegador), publicada en https://claude.ai/artifact/1vD3zqDnqTbkSUSw7vcZEX. Se tomó solo la idea de la muestra de otro equipo; diseño, contenido y código propios. |
 
 ---
 
@@ -355,6 +356,7 @@ El alcance exacto de cada parte se define con su prompt y se controla contra [E]
 
 | # | Fecha | Prompt (textual) | Qué generó |
 |---|-------|------------------|------------|
+| P5.1 | 18/10/2026 | agrega que el cliente pueda hacer algo y poder agregar una actividad | Nada en la app real: se interrumpió antes de escribir código y se reemplazó por la muestra navegable (R29). |
 
 ### Parte 6 — Portal público
 
