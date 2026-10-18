@@ -315,7 +315,7 @@ tabla de su parte, numerado por parte (P1.1, P1.2, …, P2.1, …).
 |-------|-------------|--------|
 | 1 | Base: proyecto Spring Boot (backend), proyecto React (frontend), repositorio git y base PostgreSQL | Terminada |
 | 2 | Catálogo de etiquetas y equipamiento: ABM del administrador, del backend al frontend | Pendiente |
-| 3 | Registro de emprendimientos y aprobación por el administrador | Pendiente |
+| 3 | Registro de emprendimientos y aprobación por el administrador | En curso |
 | 4 | Usuarios, inicio de sesión y roles | Pendiente |
 | 5 | Actividades y sus fechas y horarios | Pendiente |
 | 6 | Portal público: búsqueda y detalle de actividades | Pendiente |
@@ -337,11 +337,13 @@ El alcance exacto de cada parte se define con su prompt y se controla contra [E]
 
 | # | Fecha | Prompt (textual) | Qué generó |
 |---|-------|------------------|------------|
+| P2.1 | 18/10/2026 | dale, arranquemos con la parte 2 | Plan de la Parte 2 (entidades, endpoints, pantallas). Sin código: el equipo priorizó la Parte 3 para la defensa (P3.1). |
 
 ### Parte 3 — Registro y aprobación de emprendimientos
 
 | # | Fecha | Prompt (textual) | Qué generó |
 |---|-------|------------------|------------|
+| P3.1 | 18/10/2026 | preciso que hagas esto, presentar algo al cliente<br>registro del proveedor<br> y administrador de aceptar o denegar. esto es lo que tengo que tener si o si para la defensa de manana | Registro de emprendimiento (persona física o jurídica) y pantalla del administrador para aceptar o rechazar, de punta a punta. |
 
 ### Parte 4 — Usuarios, inicio de sesión y roles
 
