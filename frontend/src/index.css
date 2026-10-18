@@ -459,3 +459,106 @@ h1 {
 .confirm .button {
   margin-right: 8px;
 }
+
+/* ---- Choose user ---- */
+
+.choose-role {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 16px;
+  background: linear-gradient(160deg, var(--green) 0%, var(--green-dark) 100%);
+}
+
+.choose-role-inner {
+  width: 100%;
+  max-width: 820px;
+  background: #fff;
+  border-radius: 14px;
+  padding: 36px 32px;
+}
+
+.brand.big {
+  margin: 0 0 20px;
+  color: var(--green);
+  font-size: 1.5rem;
+}
+
+.role-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 14px;
+}
+
+.role-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-align: left;
+  font: inherit;
+  padding: 18px;
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  background: #fff;
+  cursor: pointer;
+}
+
+.role-card strong {
+  color: var(--green);
+  font-size: 1.1rem;
+}
+
+.role-card span {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.role-card:hover,
+.role-card:focus-visible {
+  border-color: var(--green);
+  background: var(--green-light);
+}
+
+.note {
+  margin: 24px 0 0;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.current-role {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.9rem;
+}
+
+.current-role span {
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.18);
+  font-weight: 600;
+}
+
+.current-role button {
+  font: inherit;
+  color: #dcebe4;
+  background: none;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 6px;
+  padding: 4px 10px;
+  cursor: pointer;
+}
+
+.current-role button:hover {
+  color: #fff;
+  border-color: #fff;
+}
+
+.card.soon {
+  background: #fafcfb;
+}
+
+.card.soon h2 {
+  color: var(--muted);
+}
