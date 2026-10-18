@@ -313,7 +313,7 @@ tabla de su parte, numerado por parte (P1.1, P1.2, …, P2.1, …).
 
 | Parte | Qué incluye | Estado |
 |-------|-------------|--------|
-| 1 | Base: proyecto Spring Boot (backend), proyecto React (frontend), repositorio git y base PostgreSQL | En curso |
+| 1 | Base: proyecto Spring Boot (backend), proyecto React (frontend), repositorio git y base PostgreSQL | Terminada |
 | 2 | Catálogo de etiquetas y equipamiento: ABM del administrador, del backend al frontend | Pendiente |
 | 3 | Registro de emprendimientos y aprobación por el administrador | Pendiente |
 | 4 | Usuarios, inicio de sesión y roles | Pendiente |
@@ -331,7 +331,7 @@ El alcance exacto de cada parte se define con su prompt y se controla contra [E]
 | # | Fecha | Prompt (textual) | Qué generó |
 |---|-------|------------------|------------|
 | P1.1 | 18/10/2026 | ahora vamos a pasar al codigo y a arrancar a crear la pagina | Plan de la Parte 1 y revisión de lo instalado (Java 25, Node, Git, PostgreSQL 17 y 18). Sin código todavía. |
-| P1.2 | 18/10/2026 | okay perfecto, vamos a hacerlo con java 25, no quiero escribir codigo, quiero que vos lo hagas y que luego me lo expliques. ya tengo un repositorio git creado pero despues todos los otros pasos estan perfectos, vamo a darle | Base de datos uruguay_mnatural, backend Spring Boot (Java 25) con /api/health, frontend React (Vite) que muestra la conexión. |
+| P1.2 | 18/10/2026 | okay perfecto, vamos a hacerlo con java 25, no quiero escribir codigo, quiero que vos lo hagas y que luego me lo expliques. ya tengo un repositorio git creado pero despues todos los otros pasos estan perfectos, vamo a darle | Base de datos uruguay_mnatural, backend Spring Boot (Java 25) con /api/health, frontend React (Vite) que muestra la conexión. Primer commit subido a GitHub (NicolasVanCleef/KILOMETRO-CERO, rama main). |
 
 ### Parte 2 — Catálogo de etiquetas y equipamiento
 
