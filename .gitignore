@@ -12,3 +12,7 @@ _referencia/
 Thumbs.db
 .idea/
 .vscode/
+
+# Claves de Mercado Pago (no se suben)
+backend/secrets.properties
+frontend/.env.local

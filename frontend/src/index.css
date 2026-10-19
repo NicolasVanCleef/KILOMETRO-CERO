@@ -599,3 +599,17 @@ h1 {
 .test-cards .mono {
   white-space: nowrap;
 }
+
+/* Mercado Pago secure fields (iframes) look like our inputs */
+.mp-field {
+  height: 40px;
+  padding: 0 10px;
+  border: 1px solid #b9c8c1;
+  border-radius: 6px;
+  background: #fff;
+}
+
+.detail h3 {
+  font-size: 1rem;
+  margin: 18px 0 4px;
+}

@@ -10,7 +10,7 @@ export const ROLES = {
   TOURIST: {
     label: 'Turista',
     description: 'Reservá actividades y consultá tus reservas.',
-    links: [{ to: '/pagos', label: 'Pagar (sandbox)' }],
+    links: [{ to: '/pagos', label: 'Pagar (Mercado Pago)' }],
   },
   PROVIDER: {
     label: 'Prestador',

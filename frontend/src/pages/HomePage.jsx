@@ -8,8 +8,8 @@ const ACTIONS = {
   ],
   TOURIST: [
     {
-      title: 'Pagar (sandbox)',
-      text: 'Pagá con tarjeta a través del servicio de pagos externo. Probá las tarjetas de prueba: aprobada, rechazada, con error o sin respuesta.',
+      title: 'Pagar con Mercado Pago',
+      text: 'Pagá con tarjeta a través de Mercado Pago, en su entorno de pruebas. Probá con las tarjetas de prueba: aprobado, rechazado o pendiente.',
       to: '/pagos',
       button: 'Ir a pagar',
     },

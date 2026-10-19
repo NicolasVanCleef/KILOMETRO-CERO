@@ -16,8 +16,8 @@ import jakarta.persistence.Table;
  * One payment attempt (PAGO in the MER). The link to the booking (reserva_id) is added
  * together with bookings (Part 7).
  *
- * The full card number is never stored: only the last 4 digits and the token the payment
- * service returns (RN-24).
+ * The card number never reaches Uruguay Mnatural: Mercado Pago captures it in the browser and
+ * gives a one-time token. Only the last 4 digits Mercado Pago reports are stored (RN-24).
  */
 @Entity
 @Table(name = "payments")
@@ -34,13 +34,10 @@ public class Payment {
     @Column(nullable = false)
     private PaymentStatus status;
 
-    @Column(nullable = false, length = 4)
+    @Column(length = 4)
     private String cardLast4;
 
-    /** Token of the card given by the payment service (only when approved). */
-    private String cardToken;
-
-    /** Transaction id given by the payment service (only when approved). */
+    /** Payment id in Mercado Pago. */
     private String externalReference;
 
     /** Why it was not approved, in words for the user. */
@@ -53,12 +50,11 @@ public class Payment {
         // required by JPA
     }
 
-    public Payment(BigDecimal amount, PaymentStatus status, String cardLast4, String cardToken,
-            String externalReference, String message) {
+    public Payment(BigDecimal amount, PaymentStatus status, String cardLast4, String externalReference,
+            String message) {
         this.amount = amount;
         this.status = status;
         this.cardLast4 = cardLast4;
-        this.cardToken = cardToken;
         this.externalReference = externalReference;
         this.message = message;
         this.createdAt = LocalDateTime.now();
@@ -78,10 +74,6 @@ public class Payment {
 
     public String getCardLast4() {
         return cardLast4;
-    }
-
-    public String getCardToken() {
-        return cardToken;
     }
 
     public String getExternalReference() {
