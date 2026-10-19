@@ -40,10 +40,21 @@ function RegisterBusinessPage() {
     }
   }
 
+  // The phone only accepts digits: anything else is dropped as you type, up to 9.
+  function updatePhone(event) {
+    const digits = event.target.value.replace(/\D/g, '').slice(0, 9)
+    setForm({ ...form, phone: digits })
+    setErrors({ ...errors, phone: undefined })
+  }
+
   async function handleSubmit(event) {
     event.preventDefault()
     setMessage('')
 
+    if (form.phone.length !== 9) {
+      setErrors({ phone: 'El teléfono tiene que tener 9 dígitos, solo números.' })
+      return
+    }
     if (form.password !== form.passwordConfirmation) {
       setErrors({ passwordConfirmation: 'Las contraseñas no coinciden.' })
       return
@@ -125,8 +136,8 @@ function RegisterBusinessPage() {
         <fieldset>
           <legend>Contacto y ubicación</legend>
           <div className="grid">
-            <Field label="Teléfono" error={errors.phone}>
-              <input value={form.phone} onChange={update('phone')} type="tel" />
+            <Field label="Teléfono" error={errors.phone} hint="9 dígitos, por ejemplo 099123456">
+              <input value={form.phone} onChange={updatePhone} type="tel" inputMode="numeric" maxLength={9} />
             </Field>
             <Field label="Correo electrónico" error={errors.email} hint="Con este correo vas a iniciar sesión">
               <input value={form.email} onChange={update('email')} type="email" />

@@ -346,6 +346,7 @@ El alcance exacto de cada parte se define con su prompt y se controla contra [E]
 |---|-------|------------------|------------|
 | P3.1 | 18/10/2026 | preciso que hagas esto, presentar algo al cliente<br>registro del proveedor<br> y administrador de aceptar o denegar. esto es lo que tengo que tener si o si para la defensa de manana | Registro de emprendimiento (persona física o jurídica) y pantalla del administrador para aceptar o rechazar, de punta a punta. |
 | P3.2 | 18/10/2026 | antes de entrar a la pagina, da la opcion de entrar como los diferentes usaurios, tipo visitante, admin, proveedor, turista | Pantalla de entrada para elegir el usuario (visitante, turista, prestador, administrador), con menú y accesos según el rol. Es una simulación hasta el login real de la Parte 4. |
+| P3.3 | 19/10/2026 | que telefono me pida digitos, ahora puedo poner letras, y que sean 9 digitos. esto cambialo en el modelo del artifact y en el front y backend | Teléfono de exactamente 9 dígitos, solo números: validación en el DTO del backend (@Pattern) con 4 tests nuevos, campo del frontend que solo deja escribir números, y lo mismo en la muestra navegable (con los teléfonos de ejemplo corregidos). |
 
 ### Parte 4 — Usuarios, inicio de sesión y roles
 

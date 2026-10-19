@@ -5,6 +5,7 @@ import com.uruguaymnatural.backend.model.PersonType;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 /**
@@ -22,7 +23,7 @@ public record BusinessRegistrationDto(
         String legalName,
 
         @NotBlank(message = "Ingresá un teléfono.")
-        @Size(max = 30, message = "Máximo 30 caracteres.")
+        @Pattern(regexp = "\\d{9}", message = "El teléfono tiene que tener 9 dígitos, solo números.")
         String phone,
 
         @NotBlank(message = "Ingresá un correo electrónico.")

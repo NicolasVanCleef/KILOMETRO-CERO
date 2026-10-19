@@ -171,7 +171,7 @@ class BusinessServiceTest {
     }
 
     private static BusinessRegistrationDto company(String rut, String representative) {
-        return new BusinessRegistrationDto(PersonType.COMPANY, rut, "Aventura Sur S.A.", "42001122",
+        return new BusinessRegistrationDto(PersonType.COMPANY, rut, "Aventura Sur S.A.", "042001122",
                 "info@aventurasur.uy", representative, "Kayak y trekking", "Rocha", "La Paloma", null,
                 "secreta123");
     }
