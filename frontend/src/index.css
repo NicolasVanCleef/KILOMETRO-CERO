@@ -562,3 +562,40 @@ h1 {
 .card.soon h2 {
   color: var(--muted);
 }
+
+/* ---- Payments ---- */
+
+.mono {
+  font-family: ui-monospace, 'Cascadia Mono', Consolas, monospace;
+}
+
+.small {
+  font-size: 0.85rem;
+}
+
+.button.small {
+  padding: 5px 10px;
+  font-size: 0.85rem;
+}
+
+.test-cards {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 8px;
+}
+
+.test-cards td {
+  padding: 8px 4px;
+  border-bottom: 1px solid #edf2ef;
+  font-size: 0.9rem;
+}
+
+.list h2,
+.detail h2 {
+  margin-top: 0;
+  font-size: 1.2rem;
+}
+
+.test-cards .mono {
+  white-space: nowrap;
+}

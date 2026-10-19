@@ -33,6 +33,19 @@ export const api = {
   getBusiness: (id) => request(`/admin/businesses/${id}`),
   approveBusiness: (id) => request(`/admin/businesses/${id}/approve`, { method: 'POST' }),
   rejectBusiness: (id) => request(`/admin/businesses/${id}/reject`, { method: 'POST' }),
+  pay: (data) => request('/payments', { method: 'POST', body: JSON.stringify(data) }),
+  listPayments: () => request('/payments'),
+}
+
+export const PAYMENT_STATUS = {
+  APPROVED: { label: 'Aprobado', className: 'approved' },
+  REJECTED: { label: 'Rechazado', className: 'rejected' },
+  PENDING: { label: 'Pendiente', className: 'pending' },
+  REFUNDED: { label: 'Reembolsado', className: 'pending' },
+}
+
+export function formatMoney(amount) {
+  return '$ ' + Number(amount).toLocaleString('es-UY')
 }
 
 // Texts shown for the backend's enum values.

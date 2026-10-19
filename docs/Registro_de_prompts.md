@@ -321,7 +321,7 @@ tabla de su parte, numerado por parte (P1.1, P1.2, …, P2.1, …).
 | 5 | Actividades y sus fechas y horarios | Pendiente |
 | 6 | Portal público: búsqueda y detalle de actividades | Pendiente |
 | 7 | Reservas con control de cupo | Pendiente |
-| 8 | Pagos en sandbox y manejo de fallos | Pendiente |
+| 8 | Pagos en sandbox y manejo de fallos | En curso |
 | 9 | Valoraciones y respuesta del prestador | Pendiente |
 | 10 | API pública y clima | Pendiente |
 
@@ -373,6 +373,7 @@ El alcance exacto de cada parte se define con su prompt y se controla contra [E]
 
 | # | Fecha | Prompt (textual) | Qué generó |
 |---|-------|------------------|------------|
+| P8.1 | 19/10/2026 | necestito hacer los pagos en sandbox para esta defensa | Servicio de pagos sandbox llamado por HTTP (aprobado, rechazado, error, no responde), cliente con espera máxima de 1 minuto, tabla payments con los intentos (solo últimos 4 dígitos), pantalla de pago del turista. Sin reservas todavía: se paga un monto de prueba. |
 
 ### Parte 9 — Valoraciones y respuesta del prestador
 

@@ -5,6 +5,7 @@ import ChooseRolePage from './pages/ChooseRolePage.jsx'
 import HomePage from './pages/HomePage.jsx'
 import RegisterBusinessPage from './pages/RegisterBusinessPage.jsx'
 import AdminBusinessesPage from './pages/AdminBusinessesPage.jsx'
+import PaymentPage from './pages/PaymentPage.jsx'
 
 function App() {
   const [role, setRole] = useState(loadRole)
@@ -47,6 +48,8 @@ function App() {
             element={<OnlyFor role={role} allowed="PROVIDER"><RegisterBusinessPage /></OnlyFor>} />
           <Route path="/admin/emprendimientos"
             element={<OnlyFor role={role} allowed="ADMIN"><AdminBusinessesPage /></OnlyFor>} />
+          <Route path="/pagos"
+            element={<OnlyFor role={role} allowed="TOURIST"><PaymentPage /></OnlyFor>} />
           <Route path="*" element={<p className="page">Página no encontrada.</p>} />
         </Routes>
       </main>

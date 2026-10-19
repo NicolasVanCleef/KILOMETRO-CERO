@@ -7,6 +7,12 @@ const ACTIONS = {
     { title: 'Crear una cuenta de turista', text: 'Registrate para poder reservar.', soon: true },
   ],
   TOURIST: [
+    {
+      title: 'Pagar (sandbox)',
+      text: 'Pagá con tarjeta a través del servicio de pagos externo. Probá las tarjetas de prueba: aprobada, rechazada, con error o sin respuesta.',
+      to: '/pagos',
+      button: 'Ir a pagar',
+    },
     { title: 'Explorar y reservar', text: 'Elegí una actividad, una fecha y la cantidad de personas.', soon: true },
     { title: 'Mis reservas', text: 'Consultá el estado de tus reservas.', soon: true },
   ],
