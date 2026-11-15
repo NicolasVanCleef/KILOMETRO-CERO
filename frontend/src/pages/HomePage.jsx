@@ -35,7 +35,12 @@ const ACTIONS = {
       to: '/prestador/emprendimiento',
       button: 'Ver mi emprendimiento',
     },
-    { title: 'Mis actividades', text: 'Publicá tus actividades y sus fechas.', soon: true },
+    {
+      title: 'Mis actividades',
+      text: 'Cargá tus actividades y programalas en fechas, cada una con su cupo y su precio.',
+      to: '/prestador/actividades',
+      button: 'Ver mis actividades',
+    },
   ],
   ADMIN: [
     {

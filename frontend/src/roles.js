@@ -15,7 +15,10 @@ export const ROLES = {
   },
   PROVIDER: {
     label: 'Prestador',
-    links: [{ to: '/prestador/emprendimiento', label: 'Mi emprendimiento' }],
+    links: [
+      { to: '/prestador/actividades', label: 'Mis actividades' },
+      { to: '/prestador/emprendimiento', label: 'Mi emprendimiento' },
+    ],
   },
   ADMIN: {
     label: 'Administrador',

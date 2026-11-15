@@ -9,6 +9,7 @@ import com.uruguaymnatural.backend.dto.CatalogItemDto;
 import com.uruguaymnatural.backend.exception.BusinessRuleException;
 import com.uruguaymnatural.backend.exception.ResourceNotFoundException;
 import com.uruguaymnatural.backend.model.Equipment;
+import com.uruguaymnatural.backend.repository.ActivityRepository;
 import com.uruguaymnatural.backend.repository.EquipmentRepository;
 
 /**
@@ -18,9 +19,11 @@ import com.uruguaymnatural.backend.repository.EquipmentRepository;
 public class EquipmentService {
 
     private final EquipmentRepository equipmentRepository;
+    private final ActivityRepository activityRepository;
 
-    public EquipmentService(EquipmentRepository equipmentRepository) {
+    public EquipmentService(EquipmentRepository equipmentRepository, ActivityRepository activityRepository) {
         this.equipmentRepository = equipmentRepository;
+        this.activityRepository = activityRepository;
     }
 
     @Transactional(readOnly = true)
@@ -44,9 +47,20 @@ public class EquipmentService {
         return CatalogItemDto.from(equipment);
     }
 
+    /**
+     * Deletes an equipment type. Not allowed while a published activity uses it.
+     * Activities already deleted simply lose it.
+     */
     @Transactional
     public void delete(Long id) {
-        equipmentRepository.delete(find(id));
+        Equipment equipment = find(id);
+        if (activityRepository.existsByEquipmentEquipmentIdAndActiveTrue(id)) {
+            throw new BusinessRuleException(
+                    "Hay actividades publicadas que usan \"" + equipment.getName() + "\". No se puede eliminar.");
+        }
+        activityRepository.findByEquipmentEquipmentId(id).forEach(activity ->
+                activity.getEquipment().removeIf(item -> item.getEquipment().getId().equals(id)));
+        equipmentRepository.delete(equipment);
     }
 
     private Equipment find(Long id) {

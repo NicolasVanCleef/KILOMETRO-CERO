@@ -9,6 +9,7 @@ import com.uruguaymnatural.backend.dto.CatalogItemDto;
 import com.uruguaymnatural.backend.exception.BusinessRuleException;
 import com.uruguaymnatural.backend.exception.ResourceNotFoundException;
 import com.uruguaymnatural.backend.model.Tag;
+import com.uruguaymnatural.backend.repository.ActivityRepository;
 import com.uruguaymnatural.backend.repository.TagRepository;
 
 /**
@@ -18,9 +19,11 @@ import com.uruguaymnatural.backend.repository.TagRepository;
 public class TagService {
 
     private final TagRepository tagRepository;
+    private final ActivityRepository activityRepository;
 
-    public TagService(TagRepository tagRepository) {
+    public TagService(TagRepository tagRepository, ActivityRepository activityRepository) {
         this.tagRepository = tagRepository;
+        this.activityRepository = activityRepository;
     }
 
     @Transactional(readOnly = true)
@@ -44,9 +47,19 @@ public class TagService {
         return CatalogItemDto.from(tag);
     }
 
+    /**
+     * Deletes a tag. Not allowed while a published activity uses it, because every activity
+     * needs at least one tag (RN-05). Activities already deleted simply lose the tag.
+     */
     @Transactional
     public void delete(Long id) {
-        tagRepository.delete(find(id));
+        Tag tag = find(id);
+        if (activityRepository.existsByTagsIdAndActiveTrue(id)) {
+            throw new BusinessRuleException(
+                    "Hay actividades publicadas con la etiqueta \"" + tag.getName() + "\". No se puede eliminar.");
+        }
+        activityRepository.findByTagsId(id).forEach(activity -> activity.getTags().remove(tag));
+        tagRepository.delete(tag);
     }
 
     private Tag find(Long id) {

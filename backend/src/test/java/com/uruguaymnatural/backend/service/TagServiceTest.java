@@ -18,18 +18,21 @@ import com.uruguaymnatural.backend.dto.CatalogItemDto;
 import com.uruguaymnatural.backend.exception.BusinessRuleException;
 import com.uruguaymnatural.backend.exception.ResourceNotFoundException;
 import com.uruguaymnatural.backend.model.Tag;
+import com.uruguaymnatural.backend.repository.ActivityRepository;
 import com.uruguaymnatural.backend.repository.TagRepository;
 
 class TagServiceTest {
 
     private TagRepository tagRepository;
+    private ActivityRepository activityRepository;
     private TagService tagService;
 
     @BeforeEach
     void setUp() {
+        activityRepository = mock(ActivityRepository.class);
         tagRepository = mock(TagRepository.class);
         when(tagRepository.save(any())).thenAnswer(call -> call.getArgument(0));
-        tagService = new TagService(tagRepository);
+        tagService = new TagService(tagRepository, activityRepository);
     }
 
     @Test
@@ -80,6 +83,15 @@ class TagServiceTest {
         when(tagRepository.findById(9L)).thenReturn(Optional.empty());
 
         assertThrows(ResourceNotFoundException.class, () -> tagService.delete(9L));
+    }
+
+    @Test
+    void tagUsedByPublishedActivityCannotBeDeleted() {
+        when(tagRepository.findById(1L)).thenReturn(Optional.of(tag(1L, "Trekking")));
+        when(activityRepository.existsByTagsIdAndActiveTrue(1L)).thenReturn(true);
+
+        assertThrows(BusinessRuleException.class, () -> tagService.delete(1L));
+        verify(tagRepository, never()).delete(any());
     }
 
     private static Tag tag(Long id, String name) {

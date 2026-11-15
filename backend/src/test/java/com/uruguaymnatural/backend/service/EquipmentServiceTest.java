@@ -16,18 +16,21 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import com.uruguaymnatural.backend.exception.BusinessRuleException;
 import com.uruguaymnatural.backend.model.Equipment;
+import com.uruguaymnatural.backend.repository.ActivityRepository;
 import com.uruguaymnatural.backend.repository.EquipmentRepository;
 
 class EquipmentServiceTest {
 
     private EquipmentRepository equipmentRepository;
+    private ActivityRepository activityRepository;
     private EquipmentService equipmentService;
 
     @BeforeEach
     void setUp() {
+        activityRepository = mock(ActivityRepository.class);
         equipmentRepository = mock(EquipmentRepository.class);
         when(equipmentRepository.save(any())).thenAnswer(call -> call.getArgument(0));
-        equipmentService = new EquipmentService(equipmentRepository);
+        equipmentService = new EquipmentService(equipmentRepository, activityRepository);
     }
 
     @Test
@@ -54,5 +57,14 @@ class EquipmentServiceTest {
         equipmentService.delete(1L);
 
         verify(equipmentRepository).delete(helmet);
+    }
+
+    @Test
+    void equipmentUsedByPublishedActivityCannotBeDeleted() {
+        when(equipmentRepository.findById(1L)).thenReturn(Optional.of(new Equipment("Casco")));
+        when(activityRepository.existsByEquipmentEquipmentIdAndActiveTrue(1L)).thenReturn(true);
+
+        assertThrows(BusinessRuleException.class, () -> equipmentService.delete(1L));
+        verify(equipmentRepository, never()).delete(any());
     }
 }

@@ -319,7 +319,7 @@ tabla de su parte, numerado por parte (P1.1, P1.2, …, P2.1, …).
 | 2 | Catálogo de etiquetas y equipamiento: ABM del administrador, del backend al frontend | En curso |
 | 3 | Registro de emprendimientos y aprobación por el administrador | En curso |
 | 4 | Usuarios, inicio de sesión y roles | En curso |
-| 5 | Actividades y sus fechas y horarios | Pendiente |
+| 5 | Actividades y sus fechas y horarios | En curso |
 | 6 | Portal público: búsqueda y detalle de actividades | Pendiente |
 | 7 | Reservas con control de cupo | Pendiente |
 | 8 | Pagos en sandbox y manejo de fallos | En curso |
@@ -361,6 +361,7 @@ El alcance exacto de cada parte se define con su prompt y se controla contra [E]
 | # | Fecha | Prompt (textual) | Qué generó |
 |---|-------|------------------|------------|
 | P5.1 | 18/10/2026 | agrega que el cliente pueda hacer algo y poder agregar una actividad | Nada en la app real: se interrumpió antes de escribir código y se reemplazó por la muestra navegable (R29). |
+| P5.2 | 15/11/2026 | podes terminar el proyecto? hacelo de a partes asi podemos ir commiteando | Actividades del prestador (crear, ver, modificar y eliminar) con etiquetas, equipamiento requerido y provisto, minutos para reservar y política de cancelación y reembolso; agenda de fechas con cupo y precio propios y cancelación de una fecha; pantallas "Mis actividades", formulario y fechas. Una etiqueta o equipamiento en uso no se puede eliminar. 15 tests nuevos. |
 
 ### Parte 6 — Portal público
 

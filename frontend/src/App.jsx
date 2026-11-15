@@ -13,6 +13,9 @@ import BusinessProfilePage from './pages/BusinessProfilePage.jsx'
 import RegisterBusinessPage from './pages/RegisterBusinessPage.jsx'
 import AdminBusinessesPage from './pages/AdminBusinessesPage.jsx'
 import AdminCatalogPage from './pages/AdminCatalogPage.jsx'
+import ProviderActivitiesPage from './pages/ProviderActivitiesPage.jsx'
+import ActivityFormPage from './pages/ActivityFormPage.jsx'
+import ActivitySchedulesPage from './pages/ActivitySchedulesPage.jsx'
 import PaymentPage from './pages/PaymentPage.jsx'
 
 function App() {
@@ -96,6 +99,14 @@ function App() {
             element={<OnlyFor role={role} allowed="ADMIN"><AdminBusinessesPage /></OnlyFor>} />
           <Route path="/admin/catalogo"
             element={<OnlyFor role={role} allowed="ADMIN"><AdminCatalogPage /></OnlyFor>} />
+          <Route path="/prestador/actividades"
+            element={<OnlyFor role={role} allowed="PROVIDER"><ProviderActivitiesPage /></OnlyFor>} />
+          <Route path="/prestador/actividades/nueva"
+            element={<OnlyFor role={role} allowed="PROVIDER"><ActivityFormPage /></OnlyFor>} />
+          <Route path="/prestador/actividades/:id"
+            element={<OnlyFor role={role} allowed="PROVIDER"><ActivityFormPage /></OnlyFor>} />
+          <Route path="/prestador/actividades/:id/fechas"
+            element={<OnlyFor role={role} allowed="PROVIDER"><ActivitySchedulesPage /></OnlyFor>} />
           <Route path="*" element={<p className="page">Página no encontrada.</p>} />
         </Routes>
       </main>

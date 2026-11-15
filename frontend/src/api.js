@@ -68,6 +68,16 @@ export const api = {
   renameEquipment: (id, name) => put(`/admin/equipment/${id}`, { name }),
   deleteEquipment: (id) => request(`/admin/equipment/${id}`, { method: 'DELETE' }),
 
+  // The provider's activities and their dates
+  listOwnActivities: () => request('/provider/activities'),
+  getOwnActivity: (id) => request(`/provider/activities/${id}`),
+  createOwnActivity: (data) => post('/provider/activities', data),
+  updateOwnActivity: (id, data) => put(`/provider/activities/${id}`, data),
+  deleteOwnActivity: (id) => request(`/provider/activities/${id}`, { method: 'DELETE' }),
+  listOwnSchedules: (activityId) => request(`/provider/activities/${activityId}/schedules`),
+  createOwnSchedule: (activityId, data) => post(`/provider/activities/${activityId}/schedules`, data),
+  cancelOwnSchedule: (id) => post(`/provider/schedules/${id}/cancel`),
+
   // Payments
   pay: (data) => post('/payments', data),
   listPayments: () => request('/payments'),
@@ -99,4 +109,24 @@ export const STATUS_LABELS = {
 export function formatDate(isoDate) {
   if (!isoDate) return '—'
   return new Date(isoDate).toLocaleString('es-UY', { dateStyle: 'short', timeStyle: 'short' })
+}
+
+// "2026-12-05" -> "sáb 5 dic 2026". The T12:00 avoids the day moving because of the time zone.
+export function formatDay(isoDay) {
+  return new Date(`${isoDay}T12:00:00`).toLocaleDateString('es-UY', {
+    weekday: 'short', day: 'numeric', month: 'short', year: 'numeric',
+  })
+}
+
+// "10:00:00" -> "10:00"
+export function formatTime(isoTime) {
+  return isoTime.slice(0, 5)
+}
+
+// 150 -> "2 h 30 min"
+export function formatDuration(minutes) {
+  const hours = Math.floor(minutes / 60)
+  const rest = minutes % 60
+  if (hours === 0) return `${rest} min`
+  return rest === 0 ? `${hours} h` : `${hours} h ${rest} min`
 }
