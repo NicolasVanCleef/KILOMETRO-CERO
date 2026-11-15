@@ -118,6 +118,10 @@ public class Business {
         this.user.setEnabled(false);
     }
 
+    public boolean isApproved() {
+        return status == BusinessStatus.APPROVED;
+    }
+
     public Long getId() {
         return id;
     }

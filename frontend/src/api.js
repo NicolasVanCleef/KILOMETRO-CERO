@@ -68,6 +68,13 @@ export const api = {
   renameEquipment: (id, name) => put(`/admin/equipment/${id}`, { name }),
   deleteEquipment: (id) => request(`/admin/equipment/${id}`, { method: 'DELETE' }),
 
+  // Public portal. Empty filters are not sent.
+  searchActivities: (filters) => {
+    const filled = Object.entries(filters).filter(([, value]) => value !== '')
+    return request(`/activities?${new URLSearchParams(filled)}`)
+  },
+  getActivityDetail: (id) => request(`/activities/${id}`),
+
   // The provider's activities and their dates
   listOwnActivities: () => request('/provider/activities'),
   getOwnActivity: (id) => request(`/provider/activities/${id}`),

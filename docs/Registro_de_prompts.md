@@ -320,7 +320,7 @@ tabla de su parte, numerado por parte (P1.1, P1.2, …, P2.1, …).
 | 3 | Registro de emprendimientos y aprobación por el administrador | En curso |
 | 4 | Usuarios, inicio de sesión y roles | En curso |
 | 5 | Actividades y sus fechas y horarios | En curso |
-| 6 | Portal público: búsqueda y detalle de actividades | Pendiente |
+| 6 | Portal público: búsqueda y detalle de actividades | En curso |
 | 7 | Reservas con control de cupo | Pendiente |
 | 8 | Pagos en sandbox y manejo de fallos | En curso |
 | 9 | Valoraciones y respuesta del prestador | Pendiente |
@@ -367,6 +367,7 @@ El alcance exacto de cada parte se define con su prompt y se controla contra [E]
 
 | # | Fecha | Prompt (textual) | Qué generó |
 |---|-------|------------------|------------|
+| P6.1 | 15/11/2026 | podes terminar el proyecto? hacelo de a partes asi podemos ir commiteando | Portal público sin necesidad de cuenta: búsqueda de actividades con filtros por palabra clave, departamento, localidad, tipo de actividad, fecha y precio máximo, y detalle de la actividad con sus datos, equipamiento, política de cancelación y próximas fechas con lugares libres. Solo se muestran actividades de emprendimientos aprobados. 10 tests nuevos. |
 
 ### Parte 7 — Reservas con cupo
 

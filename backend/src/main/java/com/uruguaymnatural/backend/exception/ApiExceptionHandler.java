@@ -8,8 +8,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 /**
  * Turns exceptions into clear JSON errors for the frontend.
@@ -36,6 +38,20 @@ public class ApiExceptionHandler {
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ApiError> handleUnreadable(HttpMessageNotReadableException e) {
         return ResponseEntity.badRequest().body(new ApiError("No se pudieron leer los datos enviados."));
+    }
+
+    /** A parameter of the address has the wrong shape, for example date=mañana instead of 2026-12-05. */
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ApiError> handleBadParameter(MethodArgumentTypeMismatchException e) {
+        return ResponseEntity.badRequest()
+                .body(new ApiError("El parámetro \"" + e.getName() + "\" no es válido."));
+    }
+
+    /** A required parameter of the address is missing. */
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public ResponseEntity<ApiError> handleMissingParameter(MissingServletRequestParameterException e) {
+        return ResponseEntity.badRequest()
+                .body(new ApiError("Falta el parámetro \"" + e.getParameterName() + "\"."));
     }
 
     @ExceptionHandler(BusinessRuleException.class)

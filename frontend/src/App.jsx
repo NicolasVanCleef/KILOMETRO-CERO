@@ -4,6 +4,8 @@ import { setSessionExpiredHandler } from './api.js'
 import { ROLES } from './roles.js'
 import { loadSession, saveSession } from './session.js'
 import HomePage from './pages/HomePage.jsx'
+import ExplorePage from './pages/ExplorePage.jsx'
+import ActivityDetailPage from './pages/ActivityDetailPage.jsx'
 import LoginPage from './pages/LoginPage.jsx'
 import RegisterTouristPage from './pages/RegisterTouristPage.jsx'
 import ForgotPasswordPage from './pages/ForgotPasswordPage.jsx'
@@ -63,6 +65,7 @@ function App() {
           </NavLink>
           <nav className="nav">
             <NavLink to="/" end>Inicio</NavLink>
+            <NavLink to="/actividades">Actividades</NavLink>
             {ROLES[role].links.map((link) => (
               <NavLink key={link.to} to={link.to}>{link.label}</NavLink>
             ))}
@@ -84,6 +87,8 @@ function App() {
       <main>
         <Routes>
           <Route path="/" element={<HomePage role={role} />} />
+          <Route path="/actividades" element={<ExplorePage />} />
+          <Route path="/actividades/:id" element={<ActivityDetailPage role={role} />} />
           <Route path="/ingresar" element={<LoginPage onLogin={login} />} />
           <Route path="/registro" element={<RegisterTouristPage />} />
           <Route path="/registro-prestador" element={<RegisterBusinessPage />} />

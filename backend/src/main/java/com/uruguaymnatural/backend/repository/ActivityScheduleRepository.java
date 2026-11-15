@@ -15,6 +15,8 @@ public interface ActivityScheduleRepository extends JpaRepository<ActivitySchedu
 
     List<ActivitySchedule> findByActivityIdAndStatus(Long activityId, ScheduleStatus status);
 
+    List<ActivitySchedule> findByStatusAndDateGreaterThanEqual(ScheduleStatus status, LocalDate date);
+
     boolean existsByActivityIdAndDateAndStartTimeAndStatus(Long activityId, LocalDate date, LocalTime startTime,
             ScheduleStatus status);
 }

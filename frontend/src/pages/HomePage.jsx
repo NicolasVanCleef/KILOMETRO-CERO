@@ -1,9 +1,16 @@
 import { Link } from 'react-router-dom'
 
+const EXPLORE = {
+  title: 'Explorar actividades',
+  text: 'Buscá actividades por destino, tipo, fecha y precio.',
+  to: '/actividades',
+  button: 'Ver actividades',
+}
+
 // What each user can do from the home page. "soon" marks parts not built yet.
 const ACTIONS = {
   VISITOR: [
-    { title: 'Explorar actividades', text: 'Buscá actividades por destino, tipo, fecha y precio.', soon: true },
+    EXPLORE,
     {
       title: 'Crear una cuenta de turista',
       text: 'Registrate para poder reservar actividades.',
@@ -18,6 +25,7 @@ const ACTIONS = {
     },
   ],
   TOURIST: [
+    EXPLORE,
     {
       title: 'Pagar (sandbox)',
       text: 'Pagá con tarjeta a través del servicio de pagos externo. Probá las tarjetas de prueba: aprobada, rechazada, con error o sin respuesta.',
@@ -25,7 +33,6 @@ const ACTIONS = {
       button: 'Ir a pagar',
     },
     { title: 'Mi perfil', text: 'Mirá y cambiá tus datos.', to: '/perfil', button: 'Ver mi perfil' },
-    { title: 'Explorar y reservar', text: 'Elegí una actividad, una fecha y la cantidad de personas.', soon: true },
     { title: 'Mis reservas', text: 'Consultá el estado de tus reservas.', soon: true },
   ],
   PROVIDER: [

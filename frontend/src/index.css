@@ -726,3 +726,55 @@ h1 {
 .list tbody tr.plain:hover {
   background: none;
 }
+
+/* ---- Portal ---- */
+
+.filters {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 12px;
+  align-items: end;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px;
+  margin-bottom: 24px;
+}
+
+.filters label {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.85rem;
+  font-weight: 600;
+  gap: 4px;
+}
+
+.filters input,
+.filters select {
+  font: inherit;
+  font-weight: 400;
+  padding: 8px 10px;
+  border: 1px solid #b9c8c1;
+  border-radius: 6px;
+  background: #fff;
+  min-width: 0;
+}
+
+.filter-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.link-card {
+  color: inherit;
+  text-decoration: none;
+  display: block;
+}
+
+.link-card:hover {
+  border-color: var(--green);
+}
+
+.link-card p {
+  margin: 6px 0;
+}
