@@ -74,6 +74,7 @@ export const api = {
     return request(`/activities?${new URLSearchParams(filled)}`)
   },
   getActivityDetail: (id) => request(`/activities/${id}`),
+  getActivityWeather: (id) => request(`/activities/${id}/weather`),
 
   // The provider's activities and their dates
   listOwnActivities: () => request('/provider/activities'),

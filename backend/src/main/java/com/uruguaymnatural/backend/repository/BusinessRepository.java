@@ -15,5 +15,7 @@ public interface BusinessRepository extends JpaRepository<Business, Long> {
 
     List<Business> findByStatusOrderByCreatedAtAsc(BusinessStatus status);
 
+    Optional<Business> findFirstByDocument(String document);
+
     boolean existsByPersonTypeAndDocument(PersonType personType, String document);
 }

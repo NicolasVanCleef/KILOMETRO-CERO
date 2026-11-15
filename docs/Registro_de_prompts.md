@@ -324,7 +324,7 @@ tabla de su parte, numerado por parte (P1.1, P1.2, …, P2.1, …).
 | 7 | Reservas con control de cupo | En curso |
 | 8 | Pagos en sandbox y manejo de fallos | En curso |
 | 9 | Valoraciones y respuesta del prestador | En curso |
-| 10 | API pública y clima | Pendiente |
+| 10 | API pública y clima | En curso |
 
 El alcance exacto de cada parte se define con su prompt y se controla contra [E] y [A].
 
@@ -392,3 +392,4 @@ El alcance exacto de cada parte se define con su prompt y se controla contra [E]
 
 | # | Fecha | Prompt (textual) | Qué generó |
 |---|-------|------------------|------------|
+| P10.1 | 15/11/2026 | podes terminar el proyecto? hacelo de a partes asi podemos ir commiteando | API pública en /api/public con las cinco operaciones del enunciado: listar emprendimientos, actividades de un día por departamento / localidad, top 3 del mes por departamento, verificar un emprendimiento (por id o por CI / RUT) y buscar por palabra clave. Pronóstico del clima en el detalle de la actividad con la API pública Open-Meteo; si no responde, la página se muestra igual. Documentación de todos los endpoints en docs/API.md. 15 tests nuevos. |

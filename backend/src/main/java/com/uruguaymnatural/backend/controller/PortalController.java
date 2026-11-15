@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.uruguaymnatural.backend.dto.ActivityDetailDto;
 import com.uruguaymnatural.backend.dto.ActivitySearchDto;
 import com.uruguaymnatural.backend.dto.ActivitySummaryDto;
+import com.uruguaymnatural.backend.dto.WeatherDto;
 import com.uruguaymnatural.backend.service.PortalService;
+import com.uruguaymnatural.backend.service.WeatherService;
 
 /**
  * The public portal (no login needed, RF-01).
@@ -24,9 +26,11 @@ import com.uruguaymnatural.backend.service.PortalService;
 public class PortalController {
 
     private final PortalService portalService;
+    private final WeatherService weatherService;
 
-    public PortalController(PortalService portalService) {
+    public PortalController(PortalService portalService, WeatherService weatherService) {
         this.portalService = portalService;
+        this.weatherService = weatherService;
     }
 
     /**
@@ -48,5 +52,14 @@ public class PortalController {
     @GetMapping("/{id}")
     public ActivityDetailDto getDetail(@PathVariable Long id) {
         return portalService.getDetail(id);
+    }
+
+    /**
+     * GET /api/activities/{id}/weather — the weather forecast for the coming dates of the activity (RF-06).
+     * An empty list when there is no forecast or the weather service does not answer.
+     */
+    @GetMapping("/{id}/weather")
+    public List<WeatherDto> getWeather(@PathVariable Long id) {
+        return weatherService.forecastFor(id);
     }
 }

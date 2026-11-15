@@ -8,6 +8,7 @@ function ActivityDetailPage({ role }) {
   const { id } = useParams()
   const [detail, setDetail] = useState(null)
   const [error, setError] = useState('')
+  const [weather, setWeather] = useState({}) // forecast by day: { '2026-12-05': {...} }
 
   function load() {
     api.getActivityDetail(id).then(setDetail).catch((e) => setError(e.message))
@@ -16,6 +17,14 @@ function ActivityDetailPage({ role }) {
   // Load the activity when the page opens or the id in the address changes.
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(load, [id])
+
+  // RF-06: the forecast is asked for apart. If the weather service fails, the page is shown
+  // just the same, without the weather column (RNF-14).
+  useEffect(() => {
+    api.getActivityWeather(id)
+      .then((days) => setWeather(Object.fromEntries(days.map((day) => [day.date, day]))))
+      .catch(() => setWeather({}))
+  }, [id])
 
   if (!detail) {
     return (
@@ -26,6 +35,7 @@ function ActivityDetailPage({ role }) {
   }
 
   const { activity, schedules, reviews, averageRating } = detail
+  const hasWeather = Object.keys(weather).length > 0
 
   return (
     <div className="page">
@@ -73,6 +83,7 @@ function ActivityDetailPage({ role }) {
                   <th>Hora</th>
                   <th>Lugares</th>
                   <th>Precio por persona</th>
+                  {hasWeather && <th>Clima</th>}
                   <th></th>
                 </tr>
               </thead>
@@ -83,6 +94,7 @@ function ActivityDetailPage({ role }) {
                     <td>{formatTime(schedule.startTime)}</td>
                     <td>{schedule.availableCapacity === 0 ? 'Sin lugares' : `${schedule.availableCapacity} libres`}</td>
                     <td>{Number(schedule.price) === 0 ? 'Sin costo' : formatMoney(schedule.price)}</td>
+                    {hasWeather && <td><Forecast day={weather[schedule.date]} /></td>}
                     <td><ScheduleAction schedule={schedule} role={role} activityId={activity.id} /></td>
                   </tr>
                 ))}
@@ -118,6 +130,17 @@ function ActivityDetailPage({ role }) {
         </aside>
       </div>
     </div>
+  )
+}
+
+// The forecast of one day: "Despejado · 14° a 25° · lluvia 10 %".
+function Forecast({ day }) {
+  if (!day) return <span className="muted small">Sin pronóstico todavía</span>
+  return (
+    <span className="small">
+      {day.description} · {Math.round(day.minTemperature)}° a {Math.round(day.maxTemperature)}°
+      {day.rainProbability !== null && <> · lluvia {day.rainProbability} %</>}
+    </span>
   )
 }
 
