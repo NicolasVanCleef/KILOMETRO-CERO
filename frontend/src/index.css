@@ -610,3 +610,55 @@ h1 {
 .form fieldset:not(:has(legend)) {
   padding-top: 16px;
 }
+
+/* ---- Tags and equipment ---- */
+
+.catalog-layout {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 20px;
+}
+
+.catalog {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 20px;
+}
+
+.inline-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  flex: 1;
+}
+
+.inline-form input {
+  flex: 1;
+  min-width: 140px;
+  font: inherit;
+  padding: 6px 10px;
+  border: 1px solid #b9c8c1;
+  border-radius: 6px;
+}
+
+.catalog-items {
+  list-style: none;
+  margin: 16px 0 0;
+  padding: 0;
+}
+
+.catalog-items li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 0;
+  border-top: 1px solid #edf2ef;
+}
+
+.row-actions {
+  display: flex;
+  gap: 6px;
+}

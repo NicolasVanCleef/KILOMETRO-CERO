@@ -12,6 +12,7 @@ import TouristProfilePage from './pages/TouristProfilePage.jsx'
 import BusinessProfilePage from './pages/BusinessProfilePage.jsx'
 import RegisterBusinessPage from './pages/RegisterBusinessPage.jsx'
 import AdminBusinessesPage from './pages/AdminBusinessesPage.jsx'
+import AdminCatalogPage from './pages/AdminCatalogPage.jsx'
 import PaymentPage from './pages/PaymentPage.jsx'
 
 function App() {
@@ -93,6 +94,8 @@ function App() {
             element={<OnlyFor role={role} allowed="PROVIDER"><BusinessProfilePage /></OnlyFor>} />
           <Route path="/admin/emprendimientos"
             element={<OnlyFor role={role} allowed="ADMIN"><AdminBusinessesPage /></OnlyFor>} />
+          <Route path="/admin/catalogo"
+            element={<OnlyFor role={role} allowed="ADMIN"><AdminCatalogPage /></OnlyFor>} />
           <Route path="*" element={<p className="page">Página no encontrada.</p>} />
         </Routes>
       </main>

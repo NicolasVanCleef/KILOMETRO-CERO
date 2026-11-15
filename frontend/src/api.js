@@ -58,6 +58,16 @@ export const api = {
   approveBusiness: (id) => post(`/admin/businesses/${id}/approve`),
   rejectBusiness: (id) => post(`/admin/businesses/${id}/reject`),
 
+  // Tags and equipment (the lists are public; only the administrator changes them)
+  listTags: () => request('/tags'),
+  createTag: (name) => post('/admin/tags', { name }),
+  renameTag: (id, name) => put(`/admin/tags/${id}`, { name }),
+  deleteTag: (id) => request(`/admin/tags/${id}`, { method: 'DELETE' }),
+  listEquipment: () => request('/equipment'),
+  createEquipment: (name) => post('/admin/equipment', { name }),
+  renameEquipment: (id, name) => put(`/admin/equipment/${id}`, { name }),
+  deleteEquipment: (id) => request(`/admin/equipment/${id}`, { method: 'DELETE' }),
+
   // Payments
   pay: (data) => post('/payments', data),
   listPayments: () => request('/payments'),

@@ -44,7 +44,12 @@ const ACTIONS = {
       to: '/admin/emprendimientos',
       button: 'Ver emprendimientos',
     },
-    { title: 'Etiquetas y equipamiento', text: 'Mantené los tipos de actividad y de equipamiento.', soon: true },
+    {
+      title: 'Etiquetas y equipamiento',
+      text: 'Mantené los tipos de actividad y de equipamiento que usan los prestadores.',
+      to: '/admin/catalogo',
+      button: 'Ver etiquetas y equipamiento',
+    },
   ],
 }
 

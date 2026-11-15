@@ -316,7 +316,7 @@ tabla de su parte, numerado por parte (P1.1, P1.2, …, P2.1, …).
 | Parte | Qué incluye | Estado |
 |-------|-------------|--------|
 | 1 | Base: proyecto Spring Boot (backend), proyecto React (frontend), repositorio git y base PostgreSQL | Terminada |
-| 2 | Catálogo de etiquetas y equipamiento: ABM del administrador, del backend al frontend | Pendiente |
+| 2 | Catálogo de etiquetas y equipamiento: ABM del administrador, del backend al frontend | En curso |
 | 3 | Registro de emprendimientos y aprobación por el administrador | En curso |
 | 4 | Usuarios, inicio de sesión y roles | En curso |
 | 5 | Actividades y sus fechas y horarios | Pendiente |
@@ -340,6 +340,7 @@ El alcance exacto de cada parte se define con su prompt y se controla contra [E]
 | # | Fecha | Prompt (textual) | Qué generó |
 |---|-------|------------------|------------|
 | P2.1 | 18/10/2026 | dale, arranquemos con la parte 2 | Plan de la Parte 2 (entidades, endpoints, pantallas). Sin código: el equipo priorizó la Parte 3 para la defensa (P3.1). |
+| P2.2 | 15/11/2026 | podes terminar el proyecto? hacelo de a partes asi podemos ir commiteando | Alta, consulta, modificación y eliminación de etiquetas y de equipamiento por el administrador (tablas tags y equipment, sin nombres repetidos), listas públicas para el portal y los prestadores, y la pantalla "Etiquetas y equipamiento" del administrador. 9 tests nuevos. |
 
 ### Parte 3 — Registro y aprobación de emprendimientos
 
