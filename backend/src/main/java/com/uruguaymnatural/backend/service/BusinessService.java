@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.uruguaymnatural.backend.dto.BusinessDetailDto;
+import com.uruguaymnatural.backend.dto.BusinessProfileUpdateDto;
 import com.uruguaymnatural.backend.dto.BusinessRegistrationDto;
 import com.uruguaymnatural.backend.dto.BusinessSummaryDto;
 import com.uruguaymnatural.backend.exception.BusinessRuleException;
@@ -113,6 +114,31 @@ public class BusinessService {
                 "Hola. Uruguay Mnatural revisó el emprendimiento \"" + business.getLegalName() + "\" "
                         + "y no fue aprobado.\nSi tenés dudas, respondé a este correo.");
         return BusinessDetailDto.from(business);
+    }
+
+    /** The business of the logged-in provider (RF-33). */
+    @Transactional(readOnly = true)
+    public BusinessDetailDto getOwn(Long userId) {
+        return BusinessDetailDto.from(findByUser(userId));
+    }
+
+    /** The provider changes contact, location and description of their business (CU-06). */
+    @Transactional
+    public BusinessDetailDto updateOwn(Long userId, BusinessProfileUpdateDto data) {
+        Business business = findByUser(userId);
+        if (!Departments.isValid(data.department())) {
+            throw new InvalidDataException("department", "Elegí un departamento de la lista.");
+        }
+        String representativeName = checkRepresentative(business.getPersonType(), data.representativeName());
+        business.updateProfile(data.phone().trim(), representativeName, data.description().trim(),
+                data.department(), data.locality().trim(), blankToNull(data.address()));
+        return BusinessDetailDto.from(business);
+    }
+
+    /** The business of a logged-in provider. Other services use it to know whose activities they are. */
+    public Business findByUser(Long userId) {
+        return businessRepository.findByUserId(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("No encontramos tu emprendimiento."));
     }
 
     private Business findBusiness(Long id) {

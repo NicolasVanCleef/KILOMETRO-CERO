@@ -84,6 +84,7 @@ código anterior quedó archivado en `_referencia/`; la documentación de `docs/
 | R27 | 05/10 | fue una correcion *(sobre la nota del profesor "valoracion mer va sobre actividad", de una clase anterior)* | MER corregido: `VALORACION` se relaciona con `ACTIVIDAD` y `TURISTA` (ya no con `RESERVA`); haber participado pasa a ser regla de negocio; diagramas `MER.png/svg` y `MER_Chen.png/svg` regenerados |
 | R28 | 05/10 | el registro de prompts lo podes hacer en un docs asi lo voy viendo | Copia de este registro en Claude Docs (https://claude.ai/code/artifact/66e4060a-fb0a-48a3-979a-45143267dfff), que pasa a ser el registro principal |
 | R29 | 18/10 | https://claude.ai/artifact/FiLQ3AeY1VhwygNpKU6Wgo   quiero que me hagas algo de este estilo, pero OBVIAMENTE aplicado para nuestro proyecto. Fijate las funcionalidades que tiene | Muestra navegable propia de Kilómetro Cero (visitante, turista, prestador, administrador y API pública, con datos de ejemplo y acciones que funcionan en el navegador), publicada en https://claude.ai/artifact/1vD3zqDnqTbkSUSw7vcZEX. Se tomó solo la idea de la muestra de otro equipo; diseño, contenido y código propios. |
+| R30 | 15/11 | podes terminar el proyecto? hacelo de a partes asi podemos ir commiteando | Se retoman las partes que faltaban (4, 2, 5, 6, 7, 8, 9 y 10), una por vez y con un commit por parte. Lo que generó cada una está en la tabla de su parte (Parte 3 de este documento). |
 
 ---
 
@@ -317,7 +318,7 @@ tabla de su parte, numerado por parte (P1.1, P1.2, …, P2.1, …).
 | 1 | Base: proyecto Spring Boot (backend), proyecto React (frontend), repositorio git y base PostgreSQL | Terminada |
 | 2 | Catálogo de etiquetas y equipamiento: ABM del administrador, del backend al frontend | Pendiente |
 | 3 | Registro de emprendimientos y aprobación por el administrador | En curso |
-| 4 | Usuarios, inicio de sesión y roles | Pendiente |
+| 4 | Usuarios, inicio de sesión y roles | En curso |
 | 5 | Actividades y sus fechas y horarios | Pendiente |
 | 6 | Portal público: búsqueda y detalle de actividades | Pendiente |
 | 7 | Reservas con control de cupo | Pendiente |
@@ -352,6 +353,7 @@ El alcance exacto de cada parte se define con su prompt y se controla contra [E]
 
 | # | Fecha | Prompt (textual) | Qué generó |
 |---|-------|------------------|------------|
+| P4.1 | 15/11/2026 | podes terminar el proyecto? hacelo de a partes asi podemos ir commiteando | Inicio de sesión real con correo y contraseña (token JWT) en lugar de la pantalla de elegir usuario; registro de turista; recuperar contraseña con enlace por correo (simulado, vale 30 minutos); perfil del turista y del emprendimiento; cada ruta del backend solo responde al rol que le corresponde (/api/admin, /api/provider, /api/tourist); administrador inicial creado al arrancar. 21 tests nuevos. |
 
 ### Parte 5 — Actividades y fechas
 

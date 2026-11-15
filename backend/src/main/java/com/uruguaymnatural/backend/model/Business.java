@@ -92,6 +92,20 @@ public class Business {
         this.createdAt = LocalDateTime.now();
     }
 
+    /**
+     * Changes the data the provider manages from their own space (CU-06). The identity data
+     * reviewed by the administrator (person type, document, legal name) cannot be changed.
+     */
+    public void updateProfile(String phone, String representativeName, String description,
+            String department, String locality, String address) {
+        this.phone = phone;
+        this.representativeName = representativeName;
+        this.description = description;
+        this.department = department;
+        this.locality = locality;
+        this.address = address;
+    }
+
     public void approve() {
         this.status = BusinessStatus.APPROVED;
         this.reviewedAt = LocalDateTime.now();

@@ -1,4 +1,5 @@
 // Calls to the backend. Vite forwards /api to http://localhost:8080 (vite.config.js).
+import { loadSession } from './session.js'
 
 export class ApiError extends Error {
   constructor(message, status, fieldErrors = {}) {
@@ -8,32 +9,57 @@ export class ApiError extends Error {
   }
 }
 
+// App.jsx registers here what to do when the backend says the session is no longer valid.
+let onSessionExpired = () => {}
+export function setSessionExpiredHandler(handler) {
+  onSessionExpired = handler
+}
+
 async function request(path, options = {}) {
+  // If someone is logged in, every request carries their token.
+  const token = loadSession()?.token
+  const headers = { 'Content-Type': 'application/json' }
+  if (token) headers.Authorization = `Bearer ${token}`
+
   let response
   try {
-    response = await fetch(`/api${path}`, {
-      headers: { 'Content-Type': 'application/json' },
-      ...options,
-    })
+    response = await fetch(`/api${path}`, { headers, ...options })
   } catch {
     throw new ApiError('No se pudo conectar con el servidor. ¿Está corriendo el backend?', 0)
   }
 
   const body = response.status === 204 ? null : await response.json().catch(() => null)
   if (!response.ok) {
+    if (response.status === 401 && token) onSessionExpired()
     throw new ApiError(body?.message ?? `Error ${response.status}`, response.status, body?.fieldErrors ?? {})
   }
   return body
 }
 
+const post = (path, data) => request(path, { method: 'POST', body: data ? JSON.stringify(data) : undefined })
+const put = (path, data) => request(path, { method: 'PUT', body: JSON.stringify(data) })
+
 export const api = {
+  // Accounts
+  login: (data) => post('/auth/login', data),
+  registerTourist: (data) => post('/tourists', data),
+  requestPasswordReset: (email) => post('/auth/password-reset', { email }),
+  confirmPasswordReset: (token, password) => post('/auth/password-reset/confirm', { token, password }),
+  getTouristProfile: () => request('/tourist/profile'),
+  updateTouristProfile: (data) => put('/tourist/profile', data),
+
+  // Businesses
   getDepartments: () => request('/departments'),
-  registerBusiness: (data) => request('/businesses', { method: 'POST', body: JSON.stringify(data) }),
+  registerBusiness: (data) => post('/businesses', data),
+  getOwnBusiness: () => request('/provider/business'),
+  updateOwnBusiness: (data) => put('/provider/business', data),
   listBusinesses: (status) => request(`/admin/businesses?status=${status}`),
   getBusiness: (id) => request(`/admin/businesses/${id}`),
-  approveBusiness: (id) => request(`/admin/businesses/${id}/approve`, { method: 'POST' }),
-  rejectBusiness: (id) => request(`/admin/businesses/${id}/reject`, { method: 'POST' }),
-  pay: (data) => request('/payments', { method: 'POST', body: JSON.stringify(data) }),
+  approveBusiness: (id) => post(`/admin/businesses/${id}/approve`),
+  rejectBusiness: (id) => post(`/admin/businesses/${id}/reject`),
+
+  // Payments
+  pay: (data) => post('/payments', data),
   listPayments: () => request('/payments'),
 }
 

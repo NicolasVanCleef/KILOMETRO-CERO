@@ -4,7 +4,18 @@ import { Link } from 'react-router-dom'
 const ACTIONS = {
   VISITOR: [
     { title: 'Explorar actividades', text: 'Buscá actividades por destino, tipo, fecha y precio.', soon: true },
-    { title: 'Crear una cuenta de turista', text: 'Registrate para poder reservar.', soon: true },
+    {
+      title: 'Crear una cuenta de turista',
+      text: 'Registrate para poder reservar actividades.',
+      to: '/registro',
+      button: 'Registrarme',
+    },
+    {
+      title: '¿Ofrecés actividades?',
+      text: 'Registrá tu emprendimiento como persona física o jurídica. Un administrador lo revisa y te avisa por correo.',
+      to: '/registro-prestador',
+      button: 'Registrar emprendimiento',
+    },
   ],
   TOURIST: [
     {
@@ -13,15 +24,16 @@ const ACTIONS = {
       to: '/pagos',
       button: 'Ir a pagar',
     },
+    { title: 'Mi perfil', text: 'Mirá y cambiá tus datos.', to: '/perfil', button: 'Ver mi perfil' },
     { title: 'Explorar y reservar', text: 'Elegí una actividad, una fecha y la cantidad de personas.', soon: true },
     { title: 'Mis reservas', text: 'Consultá el estado de tus reservas.', soon: true },
   ],
   PROVIDER: [
     {
-      title: 'Registrar emprendimiento',
-      text: 'Registrá tu emprendimiento como persona física o jurídica. Un administrador lo revisa y te avisa por correo.',
-      to: '/registro-prestador',
-      button: 'Registrar emprendimiento',
+      title: 'Mi emprendimiento',
+      text: 'Mirá y cambiá los datos de contacto, la ubicación y la descripción de tu emprendimiento.',
+      to: '/prestador/emprendimiento',
+      button: 'Ver mi emprendimiento',
     },
     { title: 'Mis actividades', text: 'Publicá tus actividades y sus fechas.', soon: true },
   ],

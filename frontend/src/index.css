@@ -599,3 +599,14 @@ h1 {
 .test-cards .mono {
   white-space: nowrap;
 }
+
+/* ---- Accounts ---- */
+
+.field input:disabled {
+  background: #eef2f0;
+  color: var(--muted);
+}
+
+.form fieldset:not(:has(legend)) {
+  padding-top: 16px;
+}
