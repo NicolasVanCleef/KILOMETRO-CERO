@@ -323,7 +323,7 @@ tabla de su parte, numerado por parte (P1.1, P1.2, …, P2.1, …).
 | 6 | Portal público: búsqueda y detalle de actividades | En curso |
 | 7 | Reservas con control de cupo | En curso |
 | 8 | Pagos en sandbox y manejo de fallos | En curso |
-| 9 | Valoraciones y respuesta del prestador | Pendiente |
+| 9 | Valoraciones y respuesta del prestador | En curso |
 | 10 | API pública y clima | Pendiente |
 
 El alcance exacto de cada parte se define con su prompt y se controla contra [E] y [A].
@@ -386,6 +386,7 @@ El alcance exacto de cada parte se define con su prompt y se controla contra [E]
 
 | # | Fecha | Prompt (textual) | Qué generó |
 |---|-------|------------------|------------|
+| P9.1 | 15/11/2026 | podes terminar el proyecto? hacelo de a partes asi podemos ir commiteando | Valoraciones sobre la actividad: puntaje de 1 a 5 y comentario, solo para el turista que participó (reserva confirmada de una fecha que ya pasó), una por turista y actividad, que puede editar o borrar; se publican sin moderación en el detalle de la actividad con el promedio; el prestador responde los comentarios de sus actividades. 9 tests nuevos. |
 
 ### Parte 10 — API pública y clima
 

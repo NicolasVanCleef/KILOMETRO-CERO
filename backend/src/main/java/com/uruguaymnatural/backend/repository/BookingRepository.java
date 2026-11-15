@@ -17,6 +17,10 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     List<Booking> findByScheduleIdAndStatusIn(Long scheduleId, Collection<BookingStatus> statuses);
 
+    /** The bookings of a tourist for any date of one activity, in a given state. */
+    List<Booking> findByTouristIdAndScheduleActivityIdAndStatus(Long touristId, Long activityId,
+            BookingStatus status);
+
     /** Pending bookings whose time to pay ran out. */
     List<Booking> findByStatusAndPaymentDeadlineBefore(BookingStatus status, LocalDateTime moment);
 

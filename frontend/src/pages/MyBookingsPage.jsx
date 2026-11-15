@@ -85,6 +85,9 @@ function MyBookingsPage() {
                       {booking.participants.length === 0 ? 'Completar y pagar' : 'Pagar'}
                     </Link>
                   )}
+                  {booking.canReview && (
+                    <Link to={`/actividades/${booking.activityId}`} className="button small">Valorar la actividad</Link>
+                  )}
                   {booking.canCancel && (
                     <button className="button small secondary" onClick={() => setCancelling(booking.id)}>
                       Cancelar reserva

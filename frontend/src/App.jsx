@@ -21,6 +21,7 @@ import ActivitySchedulesPage from './pages/ActivitySchedulesPage.jsx'
 import BookingPage from './pages/BookingPage.jsx'
 import MyBookingsPage from './pages/MyBookingsPage.jsx'
 import ProviderBookingsPage from './pages/ProviderBookingsPage.jsx'
+import ProviderReviewsPage from './pages/ProviderReviewsPage.jsx'
 import PayBookingPage from './pages/PayBookingPage.jsx'
 
 function App() {
@@ -121,6 +122,8 @@ function App() {
             element={<OnlyFor role={role} allowed="TOURIST"><MyBookingsPage /></OnlyFor>} />
           <Route path="/prestador/fechas/:id/reservas"
             element={<OnlyFor role={role} allowed="PROVIDER"><ProviderBookingsPage /></OnlyFor>} />
+          <Route path="/prestador/actividades/:id/valoraciones"
+            element={<OnlyFor role={role} allowed="PROVIDER"><ProviderReviewsPage /></OnlyFor>} />
           <Route path="*" element={<p className="page">Página no encontrada.</p>} />
         </Routes>
       </main>

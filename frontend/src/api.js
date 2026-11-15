@@ -93,6 +93,14 @@ export const api = {
   cancelOwnBooking: (id) => post(`/tourist/bookings/${id}/cancel`),
   listScheduleBookings: (scheduleId) => request(`/provider/schedules/${scheduleId}/bookings`),
 
+  // Reviews
+  getOwnReview: (activityId) => request(`/tourist/activities/${activityId}/review`),
+  createReview: (activityId, data) => post(`/tourist/activities/${activityId}/reviews`, data),
+  updateReview: (id, data) => put(`/tourist/reviews/${id}`, data),
+  deleteReview: (id) => request(`/tourist/reviews/${id}`, { method: 'DELETE' }),
+  listOwnActivityReviews: (activityId) => request(`/provider/activities/${activityId}/reviews`),
+  replyReview: (id, reply) => put(`/provider/reviews/${id}/reply`, { reply }),
+
   // Payments
   payBooking: (bookingId, data) => post(`/tourist/bookings/${bookingId}/payments`, data),
   listCards: () => request('/tourist/cards'),

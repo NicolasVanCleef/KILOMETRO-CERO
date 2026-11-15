@@ -66,6 +66,9 @@ function ProviderActivitiesPage() {
             ) : (
               <div className="actions">
                 <Link to={`/prestador/actividades/${activity.id}/fechas`} className="button small">Fechas</Link>
+                <Link to={`/prestador/actividades/${activity.id}/valoraciones`} className="button small secondary">
+                  Valoraciones
+                </Link>
                 <Link to={`/prestador/actividades/${activity.id}`} className="button small secondary">Modificar</Link>
                 <button className="button small secondary" onClick={() => setDeleting(activity.id)}>Eliminar</button>
               </div>

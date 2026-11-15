@@ -15,13 +15,16 @@ import com.uruguaymnatural.backend.dto.ActivityDto;
 import com.uruguaymnatural.backend.dto.ActivitySearchDto;
 import com.uruguaymnatural.backend.dto.ActivitySummaryDto;
 import com.uruguaymnatural.backend.dto.PublicScheduleDto;
+import com.uruguaymnatural.backend.dto.ReviewDto;
 import com.uruguaymnatural.backend.exception.ResourceNotFoundException;
 import com.uruguaymnatural.backend.model.Activity;
 import com.uruguaymnatural.backend.model.ActivitySchedule;
+import com.uruguaymnatural.backend.model.Review;
 import com.uruguaymnatural.backend.model.ScheduleStatus;
 import com.uruguaymnatural.backend.model.Tag;
 import com.uruguaymnatural.backend.repository.ActivityRepository;
 import com.uruguaymnatural.backend.repository.ActivityScheduleRepository;
+import com.uruguaymnatural.backend.repository.ReviewRepository;
 
 /**
  * The public portal: anyone can search activities and see their detail without an account
@@ -32,10 +35,13 @@ public class PortalService {
 
     private final ActivityRepository activityRepository;
     private final ActivityScheduleRepository scheduleRepository;
+    private final ReviewRepository reviewRepository;
 
-    public PortalService(ActivityRepository activityRepository, ActivityScheduleRepository scheduleRepository) {
+    public PortalService(ActivityRepository activityRepository, ActivityScheduleRepository scheduleRepository,
+            ReviewRepository reviewRepository) {
         this.activityRepository = activityRepository;
         this.scheduleRepository = scheduleRepository;
+        this.reviewRepository = reviewRepository;
     }
 
     /** The published activities that pass every filter that was filled in (RF-02). */
@@ -50,7 +56,7 @@ public class PortalService {
                 .toList();
     }
 
-    /** One published activity with its coming dates (RF-03, RF-04). */
+    /** One published activity with its coming dates and its reviews (RF-03, RF-04, RF-05). */
     @Transactional(readOnly = true)
     public ActivityDetailDto getDetail(Long activityId) {
         Activity activity = findPublished(activityId);
@@ -61,7 +67,18 @@ public class PortalService {
                 .sorted(Comparator.comparing(ActivitySchedule::getStart))
                 .map(schedule -> toPublic(schedule, now))
                 .toList();
-        return new ActivityDetailDto(ActivityDto.from(activity), schedules);
+        List<Review> reviews = reviewRepository.findByActivityIdOrderByCreatedAtDesc(activityId);
+        return new ActivityDetailDto(ActivityDto.from(activity), schedules,
+                reviews.stream().map(ReviewDto::from).toList(), averageRating(reviews));
+    }
+
+    /** Average of the ratings with one decimal (4.3), or null without reviews. */
+    public static Double averageRating(List<Review> reviews) {
+        if (reviews.isEmpty()) {
+            return null;
+        }
+        double average = reviews.stream().mapToInt(Review::getRating).average().orElse(0);
+        return Math.round(average * 10) / 10.0;
     }
 
     /** A published activity: it exists, it was not deleted and its business is approved. */

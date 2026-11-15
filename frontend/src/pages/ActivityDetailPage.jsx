@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
+import Reviews from '../components/Reviews.jsx'
 import { api, formatDay, formatDuration, formatMoney, formatTime } from '../api.js'
 
 // CU-14: everything about one activity, to decide whether to do it.
@@ -8,9 +9,13 @@ function ActivityDetailPage({ role }) {
   const [detail, setDetail] = useState(null)
   const [error, setError] = useState('')
 
-  useEffect(() => {
+  function load() {
     api.getActivityDetail(id).then(setDetail).catch((e) => setError(e.message))
-  }, [id])
+  }
+
+  // Load the activity when the page opens or the id in the address changes.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(load, [id])
 
   if (!detail) {
     return (
@@ -20,7 +25,7 @@ function ActivityDetailPage({ role }) {
     )
   }
 
-  const { activity, schedules } = detail
+  const { activity, schedules, reviews, averageRating } = detail
 
   return (
     <div className="page">
@@ -84,6 +89,9 @@ function ActivityDetailPage({ role }) {
               </tbody>
             </table>
           )}
+
+          <Reviews activityId={activity.id} reviews={reviews} averageRating={averageRating} role={role}
+            onChange={load} />
         </section>
 
         <aside className="detail">

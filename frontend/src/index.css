@@ -831,3 +831,40 @@ dl.inline dd {
 .alert.small {
   font-size: 0.88rem;
 }
+
+/* ---- Reviews ---- */
+
+.stars {
+  color: #c98a00;
+  letter-spacing: 1px;
+}
+
+.review {
+  border-top: 1px solid #edf2ef;
+  padding: 12px 0;
+}
+
+.review p {
+  margin: 4px 0;
+}
+
+.reply {
+  margin-left: 16px !important;
+  padding: 8px 12px;
+  background: var(--green-light);
+  border-radius: 6px;
+  font-size: 0.92rem;
+}
+
+.review-form {
+  margin-top: 16px;
+}
+
+.reply-box {
+  width: 100%;
+  font: inherit;
+  padding: 8px 10px;
+  border: 1px solid #b9c8c1;
+  border-radius: 6px;
+  margin-top: 8px;
+}

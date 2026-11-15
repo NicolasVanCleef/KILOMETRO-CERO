@@ -24,14 +24,17 @@ import com.uruguaymnatural.backend.dto.ActivitySummaryDto;
 import com.uruguaymnatural.backend.exception.ResourceNotFoundException;
 import com.uruguaymnatural.backend.model.Activity;
 import com.uruguaymnatural.backend.model.ActivitySchedule;
+import com.uruguaymnatural.backend.model.Review;
 import com.uruguaymnatural.backend.model.ScheduleStatus;
 import com.uruguaymnatural.backend.repository.ActivityRepository;
 import com.uruguaymnatural.backend.repository.ActivityScheduleRepository;
+import com.uruguaymnatural.backend.repository.ReviewRepository;
 
 class PortalServiceTest {
 
     private ActivityRepository activityRepository;
     private ActivityScheduleRepository scheduleRepository;
+    private ReviewRepository reviewRepository;
     private PortalService portalService;
 
     // A horse ride in Rocha ($ 1500, tag 2 "Cabalgata") with a date in 3 days.
@@ -40,11 +43,12 @@ class PortalServiceTest {
 
     @BeforeEach
     void setUp() {
+        reviewRepository = mock(ReviewRepository.class);
         activityRepository = mock(ActivityRepository.class);
         scheduleRepository = mock(ActivityScheduleRepository.class);
         when(activityRepository.findPublished()).thenReturn(List.of(ride));
         when(scheduleRepository.findByStatusAndDateGreaterThanEqual(any(), any())).thenReturn(List.of(rideDate));
-        portalService = new PortalService(activityRepository, scheduleRepository);
+        portalService = new PortalService(activityRepository, scheduleRepository, reviewRepository);
     }
 
     @Test
@@ -100,6 +104,20 @@ class PortalServiceTest {
         assertEquals(1, detail.schedules().size());
         assertEquals(10L, detail.schedules().get(0).id());
         assertTrue(detail.schedules().get(0).bookable());
+    }
+
+    @Test
+    void detailShowsTheReviewsAndTheirAverage() {
+        when(activityRepository.findById(1L)).thenReturn(Optional.of(ride));
+        when(reviewRepository.findByActivityIdOrderByCreatedAtDesc(1L)).thenReturn(List.of(
+                new Review(ride, TestData.tourist(3L), 5, "Excelente"),
+                new Review(ride, TestData.tourist(4L), 4, "Muy buena")));
+
+        ActivityDetailDto detail = portalService.getDetail(1L);
+
+        assertEquals(2, detail.reviews().size());
+        assertEquals("Sofía M.", detail.reviews().get(0).touristName());
+        assertEquals(4.5, detail.averageRating());
     }
 
     @Test
