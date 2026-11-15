@@ -3,6 +3,8 @@ package com.uruguaymnatural.backend.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -35,6 +37,7 @@ class ScheduleServiceTest {
     private static final LocalDate TOMORROW = LocalDate.now().plusDays(1);
 
     private ActivityScheduleRepository scheduleRepository;
+    private BookingService bookingService;
     private ScheduleService scheduleService;
     private final Activity activity = TestData.activity(3L, TestData.business(PROVIDER));
 
@@ -44,7 +47,8 @@ class ScheduleServiceTest {
         when(scheduleRepository.save(any())).thenAnswer(call -> call.getArgument(0));
         ActivityRepository activityRepository = mock(ActivityRepository.class);
         when(activityRepository.findById(3L)).thenReturn(Optional.of(activity));
-        scheduleService = new ScheduleService(scheduleRepository, activityRepository);
+        bookingService = mock(BookingService.class);
+        scheduleService = new ScheduleService(scheduleRepository, activityRepository, bookingService);
     }
 
     @Test
@@ -96,6 +100,7 @@ class ScheduleServiceTest {
         when(scheduleRepository.findById(7L)).thenReturn(Optional.of(schedule));
 
         assertEquals(ScheduleStatus.CANCELLED, scheduleService.cancel(PROVIDER, 7L).status());
+        verify(bookingService).cancelAllOf(eq(schedule), anyString());
         assertThrows(BusinessRuleException.class, () -> scheduleService.cancel(PROVIDER, 7L));
     }
 }

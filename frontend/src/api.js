@@ -85,6 +85,14 @@ export const api = {
   createOwnSchedule: (activityId, data) => post(`/provider/activities/${activityId}/schedules`, data),
   cancelOwnSchedule: (id) => post(`/provider/schedules/${id}/cancel`),
 
+  // Bookings
+  holdBooking: (data) => post('/tourist/bookings', data),
+  saveParticipants: (id, participants) => put(`/tourist/bookings/${id}/participants`, { participants }),
+  listOwnBookings: () => request('/tourist/bookings'),
+  getOwnBooking: (id) => request(`/tourist/bookings/${id}`),
+  cancelOwnBooking: (id) => post(`/tourist/bookings/${id}/cancel`),
+  listScheduleBookings: (scheduleId) => request(`/provider/schedules/${scheduleId}/bookings`),
+
   // Payments
   pay: (data) => post('/payments', data),
   listPayments: () => request('/payments'),
@@ -136,4 +144,16 @@ export function formatDuration(minutes) {
   const rest = minutes % 60
   if (hours === 0) return `${rest} min`
   return rest === 0 ? `${hours} h` : `${hours} h ${rest} min`
+}
+
+export const BOOKING_STATUS = {
+  PENDING_PAYMENT: { label: 'Pendiente de pago', className: 'pending' },
+  CONFIRMED: { label: 'Confirmada', className: 'approved' },
+  EXPIRED: { label: 'Expirada', className: 'rejected' },
+  CANCELLED: { label: 'Cancelada', className: 'rejected' },
+}
+
+// "2026-12-05T10:42:00" -> "10:42"
+export function formatClock(isoMoment) {
+  return new Date(isoMoment).toLocaleTimeString('es-UY', { hour: '2-digit', minute: '2-digit' })
 }

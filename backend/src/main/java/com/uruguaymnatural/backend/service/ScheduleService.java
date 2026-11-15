@@ -27,10 +27,13 @@ public class ScheduleService {
 
     private final ActivityScheduleRepository scheduleRepository;
     private final ActivityRepository activityRepository;
+    private final BookingService bookingService;
 
-    public ScheduleService(ActivityScheduleRepository scheduleRepository, ActivityRepository activityRepository) {
+    public ScheduleService(ActivityScheduleRepository scheduleRepository, ActivityRepository activityRepository,
+            BookingService bookingService) {
         this.scheduleRepository = scheduleRepository;
         this.activityRepository = activityRepository;
+        this.bookingService = bookingService;
     }
 
     @Transactional(readOnly = true)
@@ -88,8 +91,10 @@ public class ScheduleService {
                 .forEach(schedule -> cancel(schedule, reason));
     }
 
+    /** Cancels the date and, with it, every booking it had: the tourists are told by email (RN-27). */
     private void cancel(ActivitySchedule schedule, String reason) {
         schedule.cancel();
+        bookingService.cancelAllOf(schedule, reason);
     }
 
     private Activity findOwnActivity(Long userId, Long activityId) {

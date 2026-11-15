@@ -118,6 +118,11 @@ function ActivitySchedulesPage() {
                         </span>
                       </td>
                       <td>
+                        {cancelling !== schedule.id && (
+                          <Link to={`/prestador/fechas/${schedule.id}/reservas`} className="button small secondary">
+                            Reservas
+                          </Link>
+                        )}{' '}
                         {!cancelled && !past && cancelling !== schedule.id && (
                           <button className="button small secondary" onClick={() => setCancelling(schedule.id)}>
                             Cancelar

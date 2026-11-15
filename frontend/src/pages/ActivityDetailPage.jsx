@@ -78,7 +78,7 @@ function ActivityDetailPage({ role }) {
                     <td>{formatTime(schedule.startTime)}</td>
                     <td>{schedule.availableCapacity === 0 ? 'Sin lugares' : `${schedule.availableCapacity} libres`}</td>
                     <td>{Number(schedule.price) === 0 ? 'Sin costo' : formatMoney(schedule.price)}</td>
-                    <td><ScheduleAction schedule={schedule} role={role} /></td>
+                    <td><ScheduleAction schedule={schedule} role={role} activityId={activity.id} /></td>
                   </tr>
                 ))}
               </tbody>
@@ -122,10 +122,13 @@ function EquipmentList({ title, items }) {
   )
 }
 
-// What the visitor can do with a date. Booking itself is added with the bookings part.
-function ScheduleAction({ schedule, role }) {
+// What the visitor can do with a date: a tourist books it, a visitor has to log in first (RN-12).
+function ScheduleAction({ schedule, role, activityId }) {
   if (!schedule.bookable) return <span className="muted small">No disponible</span>
   if (role === 'VISITOR') return <Link to="/ingresar" className="small">Iniciá sesión para reservar</Link>
+  if (role === 'TOURIST') {
+    return <Link to={`/reservar/${activityId}/${schedule.id}`} className="button small">Reservar</Link>
+  }
   return null
 }
 

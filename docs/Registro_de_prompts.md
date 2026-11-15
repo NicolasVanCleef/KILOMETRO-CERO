@@ -321,7 +321,7 @@ tabla de su parte, numerado por parte (P1.1, P1.2, …, P2.1, …).
 | 4 | Usuarios, inicio de sesión y roles | En curso |
 | 5 | Actividades y sus fechas y horarios | En curso |
 | 6 | Portal público: búsqueda y detalle de actividades | En curso |
-| 7 | Reservas con control de cupo | Pendiente |
+| 7 | Reservas con control de cupo | En curso |
 | 8 | Pagos en sandbox y manejo de fallos | En curso |
 | 9 | Valoraciones y respuesta del prestador | Pendiente |
 | 10 | API pública y clima | Pendiente |
@@ -373,6 +373,7 @@ El alcance exacto de cada parte se define con su prompt y se controla contra [E]
 
 | # | Fecha | Prompt (textual) | Qué generó |
 |---|-------|------------------|------------|
+| P7.1 | 15/11/2026 | podes terminar el proyecto? hacelo de a partes asi podemos ir commiteando | Reservas "estilo avión": al elegir la cantidad de lugares se retienen 10 minutos (con bloqueo de la fila para que dos reservas simultáneas no se lleven los mismos lugares), carga de los datos de cada participante, confirmación directa si la actividad no tiene costo con correo y código de reserva, "Mis reservas" del turista, cancelación según la política de la actividad, reservas de cada fecha para el prestador, cancelación de las reservas cuando el prestador cancela la fecha, y tarea automática cada minuto que vence las reservas pendientes y libera los lugares. 16 tests nuevos. |
 
 ### Parte 8 — Pagos en sandbox
 

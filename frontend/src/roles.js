@@ -9,6 +9,7 @@ export const ROLES = {
   TOURIST: {
     label: 'Turista',
     links: [
+      { to: '/mis-reservas', label: 'Mis reservas' },
       { to: '/pagos', label: 'Pagar (sandbox)' },
       { to: '/perfil', label: 'Mi perfil' },
     ],

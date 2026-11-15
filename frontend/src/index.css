@@ -778,3 +778,56 @@ h1 {
 .link-card p {
   margin: 6px 0;
 }
+
+/* ---- Bookings ---- */
+
+.booking-list {
+  display: grid;
+  gap: 16px;
+}
+
+.booking h2 {
+  margin: 0;
+}
+
+.booking h2 a {
+  color: inherit;
+}
+
+dl.inline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 28px;
+  margin: 12px 0;
+}
+
+dl.inline dt {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+dl.inline dd {
+  margin: 0;
+  font-weight: 600;
+}
+
+.summary {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 16px;
+}
+
+.summary p {
+  margin: 0;
+}
+
+.summary strong {
+  font-size: 2rem;
+  color: var(--green);
+}
+
+.alert.small {
+  font-size: 0.88rem;
+}
