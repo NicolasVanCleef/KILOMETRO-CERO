@@ -29,10 +29,15 @@ public class PaymentGatewayClient {
     public record Outcome(Result result, String transactionId, String cardToken, String reason) {
     }
 
-    private record ChargeRequest(String cardNumber, String holder, String expiry, String cvc, long amount) {
+    /** A charge is made either with the data of a new card or with the token of a saved one. */
+    private record ChargeRequest(String cardNumber, String holder, String expiry, String cvc, String cardToken,
+            long amount) {
     }
 
     private record ChargeResponse(String status, String transactionId, String cardToken, String reason) {
+    }
+
+    private record RefundRequest(long amount) {
     }
 
     private static final Logger log = LoggerFactory.getLogger(PaymentGatewayClient.class);
@@ -47,11 +52,36 @@ public class PaymentGatewayClient {
         this.restClient = RestClient.builder().baseUrl(baseUrl).requestFactory(requestFactory).build();
     }
 
+    /** Charges a new card. */
     public Outcome charge(String cardNumber, String holder, String expiry, String cvc, long amount) {
+        return send(new ChargeRequest(cardNumber, holder, expiry, cvc, null, amount));
+    }
+
+    /** Charges a saved card, identified by the token the service gave when it was first used. */
+    public Outcome chargeSavedCard(String cardToken, long amount) {
+        return send(new ChargeRequest(null, null, null, null, cardToken, amount));
+    }
+
+    /** Asks the service to give money back from an approved charge. true if it did. */
+    public boolean refund(String transactionId, long amount) {
+        try {
+            restClient.post()
+                    .uri("/payments/{transactionId}/refund", transactionId)
+                    .body(new RefundRequest(amount))
+                    .retrieve()
+                    .toBodilessEntity();
+            return true;
+        } catch (RestClientException e) {
+            log.warn("El servicio de pagos no pudo hacer el reembolso de {}: {}", transactionId, e.toString());
+            return false;
+        }
+    }
+
+    private Outcome send(ChargeRequest request) {
         try {
             ChargeResponse response = restClient.post()
                     .uri("/payments")
-                    .body(new ChargeRequest(cardNumber, holder, expiry, cvc, amount))
+                    .body(request)
                     .retrieve()
                     .body(ChargeResponse.class);
             if (response != null && "APPROVED".equals(response.status())) {

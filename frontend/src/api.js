@@ -94,15 +94,8 @@ export const api = {
   listScheduleBookings: (scheduleId) => request(`/provider/schedules/${scheduleId}/bookings`),
 
   // Payments
-  pay: (data) => post('/payments', data),
-  listPayments: () => request('/payments'),
-}
-
-export const PAYMENT_STATUS = {
-  APPROVED: { label: 'Aprobado', className: 'approved' },
-  REJECTED: { label: 'Rechazado', className: 'rejected' },
-  PENDING: { label: 'Pendiente', className: 'pending' },
-  REFUNDED: { label: 'Reembolsado', className: 'pending' },
+  payBooking: (bookingId, data) => post(`/tourist/bookings/${bookingId}/payments`, data),
+  listCards: () => request('/tourist/cards'),
 }
 
 export function formatMoney(amount) {

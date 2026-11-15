@@ -26,12 +26,6 @@ const ACTIONS = {
   ],
   TOURIST: [
     EXPLORE,
-    {
-      title: 'Pagar (sandbox)',
-      text: 'Pagá con tarjeta a través del servicio de pagos externo. Probá las tarjetas de prueba: aprobada, rechazada, con error o sin respuesta.',
-      to: '/pagos',
-      button: 'Ir a pagar',
-    },
     { title: 'Mi perfil', text: 'Mirá y cambiá tus datos.', to: '/perfil', button: 'Ver mi perfil' },
     { title: 'Mis reservas', text: 'Consultá el estado de tus reservas.', to: '/mis-reservas', button: 'Ver mis reservas' },
   ],

@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.contains;
 import static org.mockito.ArgumentMatchers.eq;
@@ -37,6 +38,7 @@ import com.uruguaymnatural.backend.model.BookingStatus;
 import com.uruguaymnatural.backend.model.Tourist;
 import com.uruguaymnatural.backend.repository.ActivityScheduleRepository;
 import com.uruguaymnatural.backend.repository.BookingRepository;
+import com.uruguaymnatural.backend.repository.PaymentRepository;
 
 class BookingServiceTest {
 
@@ -45,6 +47,7 @@ class BookingServiceTest {
     private BookingRepository bookingRepository;
     private ActivityScheduleRepository scheduleRepository;
     private EmailService emailService;
+    private RefundService refundService;
     private BookingService bookingService;
 
     private final Tourist tourist = TestData.tourist(TOURIST_USER);
@@ -61,7 +64,11 @@ class BookingServiceTest {
         TouristService touristService = mock(TouristService.class);
         when(touristService.findByUser(TOURIST_USER)).thenReturn(tourist);
         emailService = mock(EmailService.class);
-        bookingService = new BookingService(bookingRepository, scheduleRepository, touristService, emailService, 10);
+        refundService = mock(RefundService.class);
+        when(refundService.refund(any(Booking.class), anyInt())).thenReturn(new BigDecimal("3000.00"));
+        PaymentRepository paymentRepository = mock(PaymentRepository.class);
+        bookingService = new BookingService(bookingRepository, scheduleRepository, touristService, emailService,
+                refundService, paymentRepository, 10);
     }
 
     // ---- Holding places (CU-15, RN-13 to RN-15) ----
@@ -171,6 +178,7 @@ class BookingServiceTest {
         assertEquals(BookingStatus.CANCELLED, result.status());
         assertEquals(BookingStatus.CANCELLED, booking.getStatus());
         assertEquals(10, schedule.getAvailableCapacity());
+        verify(refundService).refund(booking, 50);
     }
 
     @Test
@@ -201,6 +209,9 @@ class BookingServiceTest {
 
         assertTrue(booking.canCancel());
         assertEquals(BigDecimal.ZERO, booking.refundAmount());
+
+        bookingService.cancelOwn(TOURIST_USER, 20L);
+        verify(refundService, never()).refund(any(Booking.class), anyInt());
     }
 
     @Test
@@ -222,6 +233,9 @@ class BookingServiceTest {
 
         assertEquals(BookingStatus.CANCELLED, booking.getStatus());
         verify(emailService).send(eq(tourist.getUser().getEmail()), anyString(), contains("el prestador canceló la fecha"));
+        // The provider cancelled, so the tourist gets back 100 % (RN-27).
+        verify(refundService).refund(booking, 100);
+        verify(emailService).send(any(), anyString(), contains("100 %"));
     }
 
     // ---- Automatic expiry (CU-17) ----

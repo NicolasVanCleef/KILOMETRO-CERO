@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useParams, useSearchParams } from 'react-router-dom'
 import { api, formatClock, formatDay, formatMoney, formatTime } from '../api.js'
 import Field from '../components/Field.jsx'
 import Countdown from '../components/Countdown.jsx'
@@ -10,6 +10,9 @@ const EMPTY_PARTICIPANT = { firstName: '', lastName: '', birthDate: '', document
 // Step 2: the data of each person. Step 3: what is left to pay, or the confirmation if it is free.
 function BookingPage() {
   const { activityId, scheduleId } = useParams()
+  // ?reserva=ID continues a booking whose places are already held (it comes from "Mis reservas").
+  const [searchParams] = useSearchParams()
+  const resumeId = searchParams.get('reserva')
   const [activity, setActivity] = useState(null)
   const [schedule, setSchedule] = useState(null)
   const [count, setCount] = useState(1)
@@ -28,6 +31,16 @@ function BookingPage() {
       })
       .catch((e) => setMessage(e.message))
   }, [activityId, scheduleId])
+
+  useEffect(() => {
+    if (!resumeId) return
+    api.getOwnBooking(resumeId)
+      .then((held) => {
+        setBooking(held)
+        setParticipants(Array.from({ length: held.participantCount }, () => ({ ...EMPTY_PARTICIPANT })))
+      })
+      .catch((e) => setMessage(e.message))
+  }, [resumeId])
 
   // Step 1 -> 2: asks the backend to hold the places.
   async function handleHold(event) {
@@ -83,7 +96,7 @@ function BookingPage() {
 
   const back = <p className="small"><Link to={`/actividades/${activityId}`}>← Volver a la actividad</Link></p>
 
-  if (!schedule && !booking) {
+  if (!schedule && !booking && !resumeId) {
     return (
       <div className="page narrow">
         {back}
@@ -144,7 +157,7 @@ function BookingPage() {
           <Countdown until={booking.paymentDeadline} onEnd={() => setTimeUp(true)} />
           ). La reserva se confirma cuando se aprueba el pago.
         </p>
-        <Link to="/mis-reservas" className="button">Ver mis reservas</Link>
+        <Link to={`/mis-reservas/${booking.id}/pagar`} className="button">Ir a pagar</Link>
       </div>
     )
   }
@@ -189,6 +202,8 @@ function BookingPage() {
       </div>
     )
   }
+
+  if (!schedule) return <div className="page narrow"><p className="muted">Cargando…</p></div>
 
   // Step 1: how many people.
   const free = Number(schedule.price) === 0

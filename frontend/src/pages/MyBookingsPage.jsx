@@ -80,6 +80,11 @@ function MyBookingsPage() {
                 </div>
               ) : (
                 <div className="actions">
+                  {pending && (
+                    <Link to={`/mis-reservas/${booking.id}/pagar`} className="button small">
+                      {booking.participants.length === 0 ? 'Completar y pagar' : 'Pagar'}
+                    </Link>
+                  )}
                   {booking.canCancel && (
                     <button className="button small secondary" onClick={() => setCancelling(booking.id)}>
                       Cancelar reserva

@@ -25,9 +25,12 @@ import com.uruguaymnatural.backend.model.ActivitySchedule;
 import com.uruguaymnatural.backend.model.Booking;
 import com.uruguaymnatural.backend.model.BookingParticipant;
 import com.uruguaymnatural.backend.model.BookingStatus;
+import com.uruguaymnatural.backend.model.Payment;
+import com.uruguaymnatural.backend.model.PaymentStatus;
 import com.uruguaymnatural.backend.model.Tourist;
 import com.uruguaymnatural.backend.repository.ActivityScheduleRepository;
 import com.uruguaymnatural.backend.repository.BookingRepository;
+import com.uruguaymnatural.backend.repository.PaymentRepository;
 
 /**
  * Bookings (CU-15, CU-17, CU-18, CU-19, CU-22).
@@ -45,15 +48,19 @@ public class BookingService {
     private final ActivityScheduleRepository scheduleRepository;
     private final TouristService touristService;
     private final EmailService emailService;
+    private final RefundService refundService;
+    private final PaymentRepository paymentRepository;
     private final long holdMinutes;
 
     public BookingService(BookingRepository bookingRepository, ActivityScheduleRepository scheduleRepository,
-            TouristService touristService, EmailService emailService,
-            @Value("${booking.hold-minutes}") long holdMinutes) {
+            TouristService touristService, EmailService emailService, RefundService refundService,
+            PaymentRepository paymentRepository, @Value("${booking.hold-minutes}") long holdMinutes) {
         this.bookingRepository = bookingRepository;
         this.scheduleRepository = scheduleRepository;
         this.touristService = touristService;
         this.emailService = emailService;
+        this.refundService = refundService;
+        this.paymentRepository = paymentRepository;
         this.holdMinutes = holdMinutes;
     }
 
@@ -148,7 +155,8 @@ public class BookingService {
 
     /**
      * The tourist cancels a booking (CU-19). A confirmed booking follows the activity's
-     * cancellation policy (RN-26). A booking that was never paid can always be dropped.
+     * cancellation policy (RN-26) and gets back the percentage the provider set. A booking
+     * that was never paid can always be dropped.
      */
     @Transactional
     public BookingDto cancelOwn(Long userId, Long bookingId) {
@@ -159,8 +167,12 @@ public class BookingService {
             throw new BusinessRuleException(cancellation.note());
         }
 
+        boolean wasConfirmed = booking.getStatus() == BookingStatus.CONFIRMED;
         booking.cancel();
         releasePlaces(booking);
+        if (wasConfirmed && cancellation.refundAmount().signum() > 0) {
+            refundService.refund(booking, booking.getSchedule().getActivity().getRefundPercentage());
+        }
         return toDto(booking, now);
     }
 
@@ -170,13 +182,19 @@ public class BookingService {
     @Transactional
     public void cancelAllOf(ActivitySchedule schedule, String reason) {
         for (Booking booking : bookingRepository.findByScheduleIdAndStatusIn(schedule.getId(), ACTIVE)) {
+            boolean wasConfirmed = booking.getStatus() == BookingStatus.CONFIRMED;
             booking.cancel();
+            // RN-27, RN-28: when it is not the tourist who cancels, everything paid goes back.
+            BigDecimal refunded = wasConfirmed ? refundService.refund(booking, 100) : BigDecimal.ZERO;
             emailService.send(booking.getTourist().getUser().getEmail(),
                     "Se canceló tu reserva",
                     "Hola " + booking.getTourist().getFirstName() + ". Lamentablemente se canceló \""
                             + schedule.getActivity().getName() + "\" del "
                             + schedule.getStart().format(DAY_AND_TIME) + " porque " + reason + ".\n"
-                            + "Tu reserva " + booking.getCode() + " quedó cancelada.");
+                            + "Tu reserva " + booking.getCode() + " quedó cancelada."
+                            + (refunded.signum() > 0
+                                    ? "\nTe devolvimos el 100 % de lo que pagaste: $ " + refunded.toPlainString() + "."
+                                    : ""));
         }
     }
 
@@ -299,6 +317,17 @@ public class BookingService {
         return code;
     }
 
+    /** For a pending booking: why its last payment attempt did not go through, if there was one. */
+    private String lastPaymentProblem(Booking booking) {
+        if (booking.getStatus() != BookingStatus.PENDING_PAYMENT || booking.getId() == null) {
+            return null;
+        }
+        return paymentRepository.findFirstByBookingIdOrderByCreatedAtDesc(booking.getId())
+                .filter(payment -> payment.getStatus() != PaymentStatus.APPROVED)
+                .map(Payment::getMessage)
+                .orElse(null);
+    }
+
     public BookingDto toDto(Booking booking, LocalDateTime now) {
         ActivitySchedule schedule = booking.getSchedule();
         Activity activity = schedule.getActivity();
@@ -323,7 +352,7 @@ public class BookingService {
                 cancellation.allowed(),
                 cancellation.note(),
                 cancellation.refundAmount(),
-                null,
+                lastPaymentProblem(booking),
                 tookPart && activity.isActive());
     }
 }

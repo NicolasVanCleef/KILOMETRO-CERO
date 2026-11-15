@@ -21,7 +21,7 @@ import ActivitySchedulesPage from './pages/ActivitySchedulesPage.jsx'
 import BookingPage from './pages/BookingPage.jsx'
 import MyBookingsPage from './pages/MyBookingsPage.jsx'
 import ProviderBookingsPage from './pages/ProviderBookingsPage.jsx'
-import PaymentPage from './pages/PaymentPage.jsx'
+import PayBookingPage from './pages/PayBookingPage.jsx'
 
 function App() {
   const [session, setSession] = useState(loadSession)
@@ -99,8 +99,8 @@ function App() {
           <Route path="/restablecer" element={<ResetPasswordPage />} />
           <Route path="/perfil"
             element={<OnlyFor role={role} allowed="TOURIST"><TouristProfilePage onNameChange={updateDisplayName} /></OnlyFor>} />
-          <Route path="/pagos"
-            element={<OnlyFor role={role} allowed="TOURIST"><PaymentPage /></OnlyFor>} />
+          <Route path="/mis-reservas/:id/pagar"
+            element={<OnlyFor role={role} allowed="TOURIST"><PayBookingPage /></OnlyFor>} />
           <Route path="/prestador/emprendimiento"
             element={<OnlyFor role={role} allowed="PROVIDER"><BusinessProfilePage /></OnlyFor>} />
           <Route path="/admin/emprendimientos"

@@ -380,6 +380,7 @@ El alcance exacto de cada parte se define con su prompt y se controla contra [E]
 | # | Fecha | Prompt (textual) | Qué generó |
 |---|-------|------------------|------------|
 | P8.1 | 19/10/2026 | necestito hacer los pagos en sandbox para esta defensa | Servicio de pagos sandbox llamado por HTTP (aprobado, rechazado, error, no responde), cliente con espera máxima de 1 minuto, tabla payments con los intentos (solo últimos 4 dígitos), pantalla de pago del turista. Sin reservas todavía: se paga un monto de prueba. |
+| P8.2 | 15/11/2026 | podes terminar el proyecto? hacelo de a partes asi podemos ir commiteando | El pago pasa a ser el pago de una reserva: con tarjeta nueva o guardada (se guarda solo el token y los últimos 4 dígitos), la reserva se confirma solo si el servicio de pagos aprueba y se manda el correo con el código; si rechaza, falla o no responde, la reserva queda pendiente 24 horas y se puede reintentar. Reembolsos por el servicio de pagos: el porcentaje de la actividad si cancela el turista y el 100 % si cancela el prestador. Se quitó la pantalla de pago con monto de prueba. 14 tests nuevos. |
 
 ### Parte 9 — Valoraciones y respuesta del prestador
 
