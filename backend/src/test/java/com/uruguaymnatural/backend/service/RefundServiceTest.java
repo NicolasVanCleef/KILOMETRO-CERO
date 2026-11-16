@@ -2,7 +2,7 @@ package com.uruguaymnatural.backend.service;
 
 import static com.uruguaymnatural.backend.TestData.withId;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -25,7 +25,7 @@ import com.uruguaymnatural.backend.repository.PaymentRepository;
 
 class RefundServiceTest {
 
-    private PaymentGatewayClient gateway;
+    private PaymentGateway gateway;
     private PaymentRepository paymentRepository;
     private RefundService refundService;
 
@@ -39,7 +39,7 @@ class RefundServiceTest {
 
     @BeforeEach
     void setUp() {
-        gateway = mock(PaymentGatewayClient.class);
+        gateway = mock(PaymentGateway.class);
         paymentRepository = mock(PaymentRepository.class);
         when(paymentRepository.findFirstByBookingIdAndStatus(20L, PaymentStatus.APPROVED))
                 .thenReturn(Optional.of(payment));
@@ -48,7 +48,7 @@ class RefundServiceTest {
 
     @Test
     void refundsThePercentageThroughThePaymentService() {
-        when(gateway.refund("sbx_123", 1500L)).thenReturn(true);
+        when(gateway.refund("sbx_123", new BigDecimal("1500.00"))).thenReturn(true);
 
         assertEquals(new BigDecimal("1500.00"), refundService.refund(booking, 50));
 
@@ -58,7 +58,7 @@ class RefundServiceTest {
 
     @Test
     void fullRefundWhenTheProviderCancels() {
-        when(gateway.refund("sbx_123", 3000L)).thenReturn(true);
+        when(gateway.refund("sbx_123", new BigDecimal("3000.00"))).thenReturn(true);
 
         assertEquals(new BigDecimal("3000.00"), refundService.refund(booking, 100));
     }
@@ -69,12 +69,12 @@ class RefundServiceTest {
                 .thenReturn(Optional.empty());
 
         assertEquals(BigDecimal.ZERO, refundService.refund(booking, 100));
-        verify(gateway, never()).refund(anyString(), anyLong());
+        verify(gateway, never()).refund(anyString(), any());
     }
 
     @Test
     void ifThePaymentServiceFailsTheRefundStaysPending() {
-        when(gateway.refund(anyString(), anyLong())).thenReturn(false);
+        when(gateway.refund(anyString(), any())).thenReturn(false);
 
         assertEquals(BigDecimal.ZERO, refundService.refund(booking, 100));
 

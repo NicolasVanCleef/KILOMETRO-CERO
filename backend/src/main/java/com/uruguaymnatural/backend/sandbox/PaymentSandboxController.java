@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
  * Simulated EXTERNAL payment provider (sandbox), like the ones payment companies offer for testing.
  *
  * It is not part of Uruguay Mnatural: it lives in this project only so the course can run without a
- * real provider. Uruguay Mnatural talks to it over HTTP (see PaymentGatewayClient), exactly as it would
- * talk to a real one; changing payments.gateway.url points the app to another provider.
+ * real provider. With payments.provider=sandbox, Uruguay Mnatural talks to it over HTTP
+ * (see SandboxPaymentGateway) instead of talking to Mercado Pago.
  *
  * The result depends on the card number, as in real sandboxes:
  *   4111 1111 1111 1111 → approved (any other valid number is approved too)

@@ -3,13 +3,33 @@ import { Link, useParams } from 'react-router-dom'
 import { api, formatDate, formatDay, formatMoney, formatTime } from '../api.js'
 import Field from '../components/Field.jsx'
 
-// Test cards of the payment sandbox (backend/.../sandbox/PaymentSandboxController.java).
-const TEST_CARDS = [
-  { number: '4111 1111 1111 1111', result: 'Pago aprobado' },
-  { number: '4000 0000 0000 0002', result: 'Pago rechazado' },
-  { number: '4000 0000 0000 0500', result: 'El servicio devuelve un error' },
-  { number: '4000 0000 0000 0408', result: 'El servicio no responde' },
-]
+// What to type to try each case, for each payment service the backend can be connected to.
+const TEST_CARDS = {
+  // Mercado Pago's test cards: the result depends on the NAME of the card holder.
+  mercadopago: {
+    intro: 'El pago lo procesa Mercado Pago con credenciales de prueba: no se mueve plata de verdad. '
+      + 'Con sus tarjetas de prueba, el resultado depende del nombre del titular.',
+    cards: [
+      { number: '5031 7557 3453 0604', holder: 'APRO', result: 'Pago aprobado' },
+      { number: '5031 7557 3453 0604', holder: 'OTHE', result: 'Pago rechazado' },
+      { number: '5031 7557 3453 0604', holder: 'FUND', result: 'Fondos insuficientes' },
+      { number: '5031 7557 3453 0604', holder: 'CONT', result: 'Queda en revisión (no se confirma)' },
+    ],
+    expiry: '11/30',
+  },
+  // The simulated provider of this project (backend/.../sandbox/PaymentSandboxController.java):
+  // the result depends on the card NUMBER.
+  sandbox: {
+    intro: 'El pago lo procesa un servicio externo simulado, que responde según el número de tarjeta.',
+    cards: [
+      { number: '4111 1111 1111 1111', holder: 'Sofía Martínez', result: 'Pago aprobado' },
+      { number: '4000 0000 0000 0002', holder: 'Sofía Martínez', result: 'Pago rechazado' },
+      { number: '4000 0000 0000 0500', holder: 'Sofía Martínez', result: 'El servicio devuelve un error' },
+      { number: '4000 0000 0000 0408', holder: 'Sofía Martínez', result: 'El servicio no responde' },
+    ],
+    expiry: '12/29',
+  },
+}
 
 const EMPTY_CARD = { cardNumber: '', holder: '', expiry: '', cvc: '' }
 
@@ -21,6 +41,8 @@ function PayBookingPage() {
   const [cards, setCards] = useState([])
   const [selected, setSelected] = useState('new') // id of a saved card, or 'new'
   const [form, setForm] = useState(EMPTY_CARD)
+  const [savedCvc, setSavedCvc] = useState('') // security code of the saved card chosen
+  const [provider, setProvider] = useState('mercadopago')
   const [errors, setErrors] = useState({})
   const [message, setMessage] = useState('')
   const [paying, setPaying] = useState(false)
@@ -35,6 +57,7 @@ function PayBookingPage() {
         if (saved.length > 0) setSelected(saved[0].id)
       })
       .catch((e) => setMessage(e.message))
+    api.getPaymentProvider().then((answer) => setProvider(answer.provider)).catch(() => {})
   }, [id])
 
   // Counts the seconds while we wait for the payment service.
@@ -58,9 +81,11 @@ function PayBookingPage() {
   }
   const onlyDigits = (max) => (value) => value.replace(/\D/g, '').slice(0, max)
 
-  function fillTestCard(number) {
+  const testCards = TEST_CARDS[provider] ?? TEST_CARDS.sandbox
+
+  function fillTestCard(card) {
     setSelected('new')
-    setForm({ cardNumber: number, holder: form.holder || 'Sofía Martínez', expiry: form.expiry || '12/29', cvc: form.cvc || '123' })
+    setForm({ cardNumber: card.number, holder: card.holder, expiry: testCards.expiry, cvc: '123' })
     setErrors({})
   }
 
@@ -71,7 +96,7 @@ function PayBookingPage() {
     setSeconds(0)
     setPaying(true)
     try {
-      const result = await api.payBooking(id, selected === 'new' ? form : { cardId: selected })
+      const result = await api.payBooking(id, selected === 'new' ? form : { cardId: selected, cvc: savedCvc })
       setBooking(result.booking)
       if (result.payment.status !== 'APPROVED') setFailed(result.payment)
     } catch (e) {
@@ -152,6 +177,13 @@ function PayBookingPage() {
                   Tarjeta guardada terminada en <span className="mono">{card.last4}</span>
                 </label>
               ))}
+              {selected !== 'new' && (
+                <Field label="Código de seguridad de esa tarjeta" error={errors.cvc}
+                  hint="Se pide cada vez que usás una tarjeta guardada">
+                  <input value={savedCvc} onChange={(e) => setSavedCvc(onlyDigits(4)(e.target.value))}
+                    inputMode="numeric" autoComplete="off" placeholder="123" />
+                </Field>
+              )}
               <label className="check">
                 <input type="radio" name="card" checked={selected === 'new'} onChange={() => setSelected('new')} />
                 Una tarjeta nueva
@@ -200,17 +232,15 @@ function PayBookingPage() {
 
         <aside className="detail">
           <h2>Tarjetas de prueba</h2>
-          <p className="muted">
-            El pago lo procesa un servicio externo (sandbox), que responde según el número de tarjeta.
-          </p>
+          <p className="muted">{testCards.intro}</p>
           <table className="test-cards">
             <tbody>
-              {TEST_CARDS.map((card) => (
-                <tr key={card.number}>
-                  <td className="mono">{card.number}</td>
+              {testCards.cards.map((card) => (
+                <tr key={card.number + card.holder}>
+                  <td className="mono">{provider === 'mercadopago' ? card.holder : card.number}</td>
                   <td>{card.result}</td>
                   <td>
-                    <button type="button" className="button secondary small" onClick={() => fillTestCard(card.number)}>
+                    <button type="button" className="button secondary small" onClick={() => fillTestCard(card)}>
                       Usar
                     </button>
                   </td>

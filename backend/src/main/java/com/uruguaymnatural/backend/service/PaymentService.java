@@ -1,6 +1,5 @@
 package com.uruguaymnatural.backend.service;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.util.List;
@@ -26,8 +25,10 @@ import com.uruguaymnatural.backend.model.PaymentStatus;
 import com.uruguaymnatural.backend.model.Tourist;
 import com.uruguaymnatural.backend.repository.CardRepository;
 import com.uruguaymnatural.backend.repository.PaymentRepository;
-import com.uruguaymnatural.backend.service.PaymentGatewayClient.Outcome;
-import com.uruguaymnatural.backend.service.PaymentGatewayClient.Result;
+import com.uruguaymnatural.backend.service.PaymentGateway.NewCard;
+import com.uruguaymnatural.backend.service.PaymentGateway.Order;
+import com.uruguaymnatural.backend.service.PaymentGateway.Outcome;
+import com.uruguaymnatural.backend.service.PaymentGateway.Result;
 
 /**
  * Paying a booking through the external payment service (CU-16).
@@ -39,7 +40,7 @@ import com.uruguaymnatural.backend.service.PaymentGatewayClient.Result;
 @Service
 public class PaymentService {
 
-    private final PaymentGatewayClient gateway;
+    private final PaymentGateway gateway;
     private final PaymentRepository paymentRepository;
     private final CardRepository cardRepository;
     private final BookingService bookingService;
@@ -48,7 +49,7 @@ public class PaymentService {
     private final TransactionTemplate transaction;
     private final long pendingHours;
 
-    public PaymentService(PaymentGatewayClient gateway, PaymentRepository paymentRepository,
+    public PaymentService(PaymentGateway gateway, PaymentRepository paymentRepository,
             CardRepository cardRepository, BookingService bookingService, TouristService touristService,
             RefundService refundService, PlatformTransactionManager transactionManager,
             @Value("${booking.pending-hours}") long pendingHours) {
@@ -63,7 +64,7 @@ public class PaymentService {
     }
 
     /** What is needed to call the payment service, prepared in the first step. */
-    private record Charge(BigDecimal amount, Card savedCard, String cardNumber, String last4) {
+    private record Charge(Order order, Card savedCard, String cardNumber, String last4) {
     }
 
     /**
@@ -78,9 +79,9 @@ public class PaymentService {
 
         // 2. Ask the external service. It always comes back with an outcome, never an exception.
         Outcome outcome = charge.savedCard() != null
-                ? gateway.chargeSavedCard(charge.savedCard().getGatewayToken(), charge.amount().longValue())
-                : gateway.charge(charge.cardNumber(), data.holder().trim(), data.expiry(), data.cvc(),
-                        charge.amount().longValue());
+                ? gateway.chargeSavedCard(charge.savedCard().getGatewayToken(), data.cvc(), charge.order())
+                : gateway.charge(new NewCard(charge.cardNumber(), data.holder().trim(), data.expiry(), data.cvc()),
+                        charge.order());
 
         // 3. Record the attempt and, only if it was approved, confirm the booking.
         return transaction.execute(status -> record(userId, bookingId, charge, outcome));
@@ -94,15 +95,21 @@ public class PaymentService {
             throw new BusinessRuleException("Antes de pagar tenés que cargar los datos de los participantes.");
         }
 
+        Order order = new Order(booking.getTotal(),
+                "Reserva " + booking.getCode() + " - " + booking.getSchedule().getActivity().getName(),
+                booking.getTourist().getUser().getEmail(), booking.getTourist().getDocument());
         Charge charge;
         if (data.cardId() != null) {
             Card card = cardRepository.findById(data.cardId())
                     .filter(found -> found.getTourist().getId().equals(booking.getTourist().getId()))
                     .orElseThrow(() -> new ResourceNotFoundException("No encontramos esa tarjeta guardada."));
-            charge = new Charge(booking.getTotal(), card, null, card.getLast4());
+            if (data.cvc() == null || !data.cvc().matches("\\d{3,4}")) {
+                throw new InvalidDataException("cvc", "Ingresá el código de seguridad de la tarjeta (3 o 4 dígitos).");
+            }
+            charge = new Charge(order, card, null, card.getLast4());
         } else {
             String cardNumber = checkNewCard(data);
-            charge = new Charge(booking.getTotal(), null, cardNumber, cardNumber.substring(cardNumber.length() - 4));
+            charge = new Charge(order, null, cardNumber, cardNumber.substring(cardNumber.length() - 4));
         }
 
         booking.setPaymentDeadline(now.plusHours(pendingHours));
@@ -116,14 +123,14 @@ public class PaymentService {
             case REJECTED -> PaymentStatus.REJECTED;
             case ERROR, NO_RESPONSE -> PaymentStatus.PENDING;   // not charged, not confirmed
         };
-        Payment payment = new Payment(booking, charge.savedCard(), charge.amount(), status, charge.last4(),
+        Payment payment = new Payment(booking, charge.savedCard(), charge.order().amount(), status, charge.last4(),
                 outcome.transactionId(), outcome.reason());
         paymentRepository.save(payment);
 
         if (outcome.result() == Result.APPROVED) {
             if (booking.getStatus() == BookingStatus.PENDING_PAYMENT) {
                 bookingService.confirm(booking);
-                if (charge.savedCard() == null) {
+                if (charge.savedCard() == null && outcome.cardToken() != null) {
                     // RF-21: a new card stays saved for the next time, as a token (RN-24).
                     payment.setCard(cardRepository.save(
                             new Card(booking.getTourist(), outcome.cardToken(), charge.last4())));
@@ -136,6 +143,11 @@ public class PaymentService {
             }
         }
         return new BookingPaymentDto(PaymentDto.from(payment), bookingService.toDto(booking, LocalDateTime.now()));
+    }
+
+    /** "mercadopago" or "sandbox": which payment service is connected. */
+    public String providerName() {
+        return gateway.name();
     }
 
     /** The logged-in tourist's saved cards, newest first. */

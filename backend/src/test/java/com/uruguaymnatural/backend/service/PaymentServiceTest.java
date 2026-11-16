@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
@@ -45,14 +44,16 @@ import com.uruguaymnatural.backend.repository.ActivityScheduleRepository;
 import com.uruguaymnatural.backend.repository.BookingRepository;
 import com.uruguaymnatural.backend.repository.CardRepository;
 import com.uruguaymnatural.backend.repository.PaymentRepository;
-import com.uruguaymnatural.backend.service.PaymentGatewayClient.Outcome;
-import com.uruguaymnatural.backend.service.PaymentGatewayClient.Result;
+import com.uruguaymnatural.backend.service.PaymentGateway.NewCard;
+import com.uruguaymnatural.backend.service.PaymentGateway.Order;
+import com.uruguaymnatural.backend.service.PaymentGateway.Outcome;
+import com.uruguaymnatural.backend.service.PaymentGateway.Result;
 
 class PaymentServiceTest {
 
     private static final Long TOURIST_USER = 3L;
 
-    private PaymentGatewayClient gateway;
+    private PaymentGateway gateway;
     private PaymentRepository paymentRepository;
     private CardRepository cardRepository;
     private EmailService emailService;
@@ -72,7 +73,7 @@ class PaymentServiceTest {
                 new BookingParticipant(booking, "Ana", "Pérez", LocalDate.of(1990, 5, 20), "41234567"),
                 new BookingParticipant(booking, "Luis", "Pérez", LocalDate.of(1988, 1, 2), "39876543")));
 
-        gateway = mock(PaymentGatewayClient.class);
+        gateway = mock(PaymentGateway.class);
         paymentRepository = mock(PaymentRepository.class);
         cardRepository = mock(CardRepository.class);
         when(cardRepository.save(any())).thenAnswer(call -> call.getArgument(0));
@@ -101,7 +102,12 @@ class PaymentServiceTest {
         assertEquals(BookingStatus.CONFIRMED, result.booking().status());
         verify(emailService).send(eq(tourist.getUser().getEmail()), anyString(), anyString());
         // the service gets the number without spaces and the booking's total
-        verify(gateway).charge(eq("4111111111111111"), anyString(), anyString(), anyString(), eq(3000L));
+        ArgumentCaptor<NewCard> sentCard = ArgumentCaptor.forClass(NewCard.class);
+        ArgumentCaptor<Order> sentOrder = ArgumentCaptor.forClass(Order.class);
+        verify(gateway).charge(sentCard.capture(), sentOrder.capture());
+        assertEquals("4111111111111111", sentCard.getValue().number());
+        assertEquals(new BigDecimal("3000"), sentOrder.getValue().amount());
+        assertEquals(tourist.getUser().getEmail(), sentOrder.getValue().payerEmail());
 
         // RN-24: only the token and the last 4 digits are kept
         ArgumentCaptor<Card> savedCard = ArgumentCaptor.forClass(Card.class);
@@ -151,15 +157,35 @@ class PaymentServiceTest {
     void payingWithASavedCardSendsItsTokenAndNotANumber() {
         Card card = withId(new Card(tourist, "tok_saved", "4242"), 7L);
         when(cardRepository.findById(7L)).thenReturn(Optional.of(card));
-        when(gateway.chargeSavedCard("tok_saved", 3000L)).thenReturn(new Outcome(Result.APPROVED, "sbx_9", "tok_saved", null));
+        when(gateway.chargeSavedCard(eq("tok_saved"), eq("123"), any())).thenReturn(new Outcome(Result.APPROVED, "sbx_9", "tok_saved", null));
 
         BookingPaymentDto result = paymentService.payBooking(TOURIST_USER, 20L,
-                new BookingPaymentRequestDto(7L, null, null, null, null));
+                new BookingPaymentRequestDto(7L, null, null, null, "123"));
 
         assertEquals(BookingStatus.CONFIRMED, result.booking().status());
         assertEquals("4242", result.payment().cardLast4());
-        verify(gateway, never()).charge(anyString(), anyString(), anyString(), anyString(), anyLong());
+        verify(gateway, never()).charge(any(), any());
         verify(cardRepository, never()).save(any());   // it was already saved
+    }
+
+    @Test
+    void aSavedCardNeedsItsSecurityCode() {
+        Card card = withId(new Card(tourist, "tok_saved", "4242"), 7L);
+        when(cardRepository.findById(7L)).thenReturn(Optional.of(card));
+
+        InvalidDataException e = assertThrows(InvalidDataException.class, () -> paymentService.payBooking(
+                TOURIST_USER, 20L, new BookingPaymentRequestDto(7L, null, null, null, null)));
+        assertEquals("cvc", e.getField());
+    }
+
+    @Test
+    void ifTheServiceCouldNotSaveTheCardThePaymentIsStillGood() {
+        answer(new Outcome(Result.APPROVED, "123456", null, null));
+
+        BookingPaymentDto result = paymentService.payBooking(TOURIST_USER, 20L, newCard("5031755734530604"));
+
+        assertEquals(BookingStatus.CONFIRMED, result.booking().status());
+        verify(cardRepository, never()).save(any());
     }
 
     @Test
@@ -168,8 +194,8 @@ class PaymentServiceTest {
         when(cardRepository.findById(7L)).thenReturn(Optional.of(card));
 
         assertThrows(ResourceNotFoundException.class, () -> paymentService.payBooking(TOURIST_USER, 20L,
-                new BookingPaymentRequestDto(7L, null, null, null, null)));
-        verify(gateway, never()).chargeSavedCard(anyString(), anyLong());
+                new BookingPaymentRequestDto(7L, null, null, null, "123")));
+        verify(gateway, never()).chargeSavedCard(anyString(), anyString(), any());
     }
 
     @Test
@@ -180,7 +206,7 @@ class PaymentServiceTest {
         InvalidDataException e = assertThrows(InvalidDataException.class, () -> paymentService.payBooking(
                 TOURIST_USER, 20L, new BookingPaymentRequestDto(null, "4111111111111111", "Sofía Martínez", expiry, "123")));
         assertEquals("expiry", e.getField());
-        verify(gateway, never()).charge(anyString(), anyString(), anyString(), anyString(), anyLong());
+        verify(gateway, never()).charge(any(), any());
     }
 
     @Test
@@ -189,7 +215,7 @@ class PaymentServiceTest {
 
         assertThrows(BusinessRuleException.class,
                 () -> paymentService.payBooking(TOURIST_USER, 20L, newCard("4111111111111111")));
-        verify(gateway, never()).charge(anyString(), anyString(), anyString(), anyString(), anyLong());
+        verify(gateway, never()).charge(any(), any());
     }
 
     @Test
@@ -203,7 +229,7 @@ class PaymentServiceTest {
     @Test
     void ifTheBookingWasCancelledWhileWaitingThePaymentIsGivenBack() {
         // The provider cancels the date during the call to the payment service.
-        when(gateway.charge(anyString(), anyString(), anyString(), anyString(), anyLong())).thenAnswer(call -> {
+        when(gateway.charge(any(), any())).thenAnswer(call -> {
             booking.cancel();
             return new Outcome(Result.APPROVED, "sbx_123", "tok_abc", null);
         });
@@ -216,7 +242,7 @@ class PaymentServiceTest {
     }
 
     private void answer(Outcome outcome) {
-        when(gateway.charge(anyString(), anyString(), anyString(), anyString(), anyLong())).thenReturn(outcome);
+        when(gateway.charge(any(), any())).thenReturn(outcome);
     }
 
     private Payment savedPayment() {

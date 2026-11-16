@@ -262,10 +262,10 @@ Lo que recibe `POST` / `PUT` de una actividad:
 { "cardNumber": "4111 1111 1111 1111", "holder": "Sofía Martínez", "expiry": "12/29", "cvc": "123" }
 ```
 
-o una tarjeta guardada:
+o una tarjeta guardada, con su código de seguridad (se pide cada vez):
 
 ```json
-{ "cardId": 1 }
+{ "cardId": 1, "cvc": "123" }
 ```
 
 Responde **201** con el intento de pago y cómo quedó la reserva. La reserva solo queda
@@ -289,11 +289,46 @@ falló o no respondió), sigue `PENDING_PAYMENT` por 24 horas y se puede volver 
 
 Estados de una reserva: `PENDING_PAYMENT`, `CONFIRMED`, `EXPIRED`, `CANCELLED`.
 
-## 7. Servicio de pagos externo (sandbox)
+| GET | `/api/tourist/payment-provider` | Qué servicio de pagos está conectado (`mercadopago` o `sandbox`), para mostrar sus tarjetas de prueba |
 
-No es parte de la API de Uruguay Mnatural: simula al proveedor de pagos externo y vive en
-`/sandbox/payments` solo para poder probar. El backend lo llama por HTTP igual que llamaría a
-un proveedor real (la dirección se cambia en `payments.gateway.url`).
+## 7. Servicio de pagos externo
+
+Uruguay Mnatural no procesa los pagos (RNF-10): el backend le pide el cobro a un servicio
+externo. Cuál se usa se elige en `application.properties` con `payments.provider`.
+
+### Mercado Pago (`payments.provider=mercadopago`, por defecto)
+
+El backend consume la API REST de Mercado Pago (`https://api.mercadopago.com`) con
+credenciales de **prueba**, que funcionan como sandbox: no se mueve plata de verdad. No se usa
+su checkout ni sus componentes para la página: el formulario de la tarjeta es el nuestro.
+
+| Llamada a Mercado Pago | Para qué |
+|------------------------|----------|
+| `POST /v1/card_tokens` | Convierte los datos de la tarjeta en un token de un solo uso |
+| `GET /v1/payment_methods/installments` | Averigua el tipo de tarjeta (visa, master…) por sus primeros 6 dígitos |
+| `POST /v1/payments` | Cobra el token. La reserva se confirma solo si responde `approved` |
+| `PUT /v1/payments/{id}` | Anula un pago que quedó "en revisión", para que no se cobre después |
+| `POST /v1/payments/{id}/refunds` | Devuelve todo o parte de un pago aprobado |
+| `GET /v1/customers/search`, `POST /v1/customers`, `POST /v1/customers/{id}/cards` | Guarda la tarjeta para la próxima vez |
+
+El Access Token de prueba va en `backend/secrets.properties` (ver
+`backend/secrets.properties.example`), que no se sube a git.
+
+Con la tarjeta de prueba `5031 7557 3453 0604` (vencimiento `11/30`, código `123`) el
+resultado depende del **nombre del titular**:
+
+| Titular | Resultado |
+|---------|-----------|
+| `APRO` | Pago aprobado |
+| `OTHE` | Pago rechazado |
+| `FUND` | Rechazado por fondos insuficientes |
+| `CONT` | Queda en revisión: se anula y la reserva sigue pendiente |
+
+### Proveedor simulado (`payments.provider=sandbox`)
+
+Simula a un proveedor de pagos y vive en `/sandbox/payments` dentro de este proyecto. No
+necesita cuenta ni claves, y además permite probar que el servicio falle o no responda. El
+backend lo llama por HTTP igual que a Mercado Pago. El resultado depende del **número**:
 
 | Tarjeta | Resultado |
 |---------|-----------|

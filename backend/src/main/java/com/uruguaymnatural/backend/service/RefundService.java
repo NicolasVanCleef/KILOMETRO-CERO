@@ -20,9 +20,9 @@ public class RefundService {
     private static final Logger log = LoggerFactory.getLogger(RefundService.class);
 
     private final PaymentRepository paymentRepository;
-    private final PaymentGatewayClient gateway;
+    private final PaymentGateway gateway;
 
-    public RefundService(PaymentRepository paymentRepository, PaymentGatewayClient gateway) {
+    public RefundService(PaymentRepository paymentRepository, PaymentGateway gateway) {
         this.paymentRepository = paymentRepository;
         this.gateway = gateway;
     }
@@ -44,7 +44,7 @@ public class RefundService {
 
     /** Asks the payment service to give the money back and records it in the payment. */
     public BigDecimal refund(Payment payment, BigDecimal amount) {
-        if (gateway.refund(payment.getExternalReference(), amount.longValue())) {
+        if (gateway.refund(payment.getExternalReference(), amount)) {
             payment.markRefunded(amount);
             return amount;
         }

@@ -4,6 +4,9 @@ _referencia/
 # Configuración local de Claude Code
 .claude/
 
+# Credenciales de prueba de Mercado Pago (cada uno pone las suyas)
+backend/secrets.properties
+
 # Archivos temporales de Word
 ~$*
 

@@ -108,6 +108,7 @@ export const api = {
   // Payments
   payBooking: (bookingId, data) => post(`/tourist/bookings/${bookingId}/payments`, data),
   listCards: () => request('/tourist/cards'),
+  getPaymentProvider: () => request('/tourist/payment-provider'),
 }
 
 export function formatMoney(amount) {

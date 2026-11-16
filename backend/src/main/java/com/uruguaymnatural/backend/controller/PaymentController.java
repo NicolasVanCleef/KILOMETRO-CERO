@@ -1,6 +1,7 @@
 package com.uruguaymnatural.backend.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,6 +42,12 @@ public class PaymentController {
     public BookingPaymentDto pay(@RequestAttribute(AuthUser.ATTRIBUTE) AuthUser user, @PathVariable Long id,
             @RequestBody BookingPaymentRequestDto data) {
         return paymentService.payBooking(user.id(), id, data);
+    }
+
+    /** GET /api/tourist/payment-provider — which payment service is connected, to show its test cards. */
+    @GetMapping("/payment-provider")
+    public Map<String, String> provider() {
+        return Map.of("provider", paymentService.providerName());
     }
 
     /** GET /api/tourist/cards — the logged-in tourist's saved cards (only the last 4 digits). */
