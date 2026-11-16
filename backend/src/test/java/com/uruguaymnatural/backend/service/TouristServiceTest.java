@@ -71,11 +71,11 @@ class TouristServiceTest {
     void updatesProfileData() {
         User user = new User("sofia@mail.com", "hash", Role.TOURIST, true);
         Tourist tourist = new Tourist(user, "Sofía", "Martínez", "Brasil", LocalDate.of(1995, 3, 10),
-                "Portugués", "AB123456");
+                "Portugués", "41234567");
         when(touristRepository.findByUserId(4L)).thenReturn(Optional.of(tourist));
 
         TouristProfileDto result = touristService.updateProfile(4L, new TouristProfileUpdateDto(
-                "Sofía", "Martínez", "Uruguay", LocalDate.of(1995, 3, 10), "Español", "4.123.456-7"));
+                "Sofía", "Martínez", "Uruguay", LocalDate.of(1995, 3, 10), "Español", "41234567"));
 
         assertEquals("Uruguay", result.country());
         assertEquals("Español", tourist.getPreferredLanguage());
@@ -84,6 +84,6 @@ class TouristServiceTest {
 
     private static TouristRegistrationDto registration(String email) {
         return new TouristRegistrationDto("Sofía", "Martínez", "Brasil", LocalDate.of(1995, 3, 10),
-                "Portugués", "AB123456", email, "secret123");
+                "Portugués", "41234567", email, "secret123");
     }
 }

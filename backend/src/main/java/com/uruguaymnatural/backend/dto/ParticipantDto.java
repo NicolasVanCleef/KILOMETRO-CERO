@@ -7,6 +7,7 @@ import com.uruguaymnatural.backend.model.BookingParticipant;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 /**
@@ -27,7 +28,7 @@ public record ParticipantDto(
         LocalDate birthDate,
 
         @NotBlank(message = "Ingresá la cédula.")
-        @Size(max = 30, message = "Máximo 30 caracteres.")
+        @Pattern(regexp = "\\d{7,8}", message = "La cédula tiene que tener 7 u 8 dígitos, solo números.")
         String document) {
 
     public static ParticipantDto from(BookingParticipant participant) {

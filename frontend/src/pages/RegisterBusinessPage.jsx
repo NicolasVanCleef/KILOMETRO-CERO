@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { api } from '../api.js'
 import Field from '../components/Field.jsx'
+import { onlyDigits } from '../digits.js'
 
 const EMPTY_FORM = {
   personType: 'INDIVIDUAL',
@@ -33,6 +34,9 @@ function RegisterBusinessPage() {
 
   const isCompany = form.personType === 'COMPANY'
 
+  // A CI has 7 or 8 digits and a RUT exactly 12 (RN-02).
+  const documentLength = isCompany ? 12 : 8
+
   function update(field) {
     return (event) => {
       setForm({ ...form, [field]: event.target.value })
@@ -40,17 +44,32 @@ function RegisterBusinessPage() {
     }
   }
 
-  // The phone only accepts digits: anything else is dropped as you type, up to 9.
-  function updatePhone(event) {
-    const digits = event.target.value.replace(/\D/g, '').slice(0, 9)
-    setForm({ ...form, phone: digits })
-    setErrors({ ...errors, phone: undefined })
+  // Changing between person types empties the document: a CI is not a RUT.
+  function updatePersonType(event) {
+    setForm({ ...form, personType: event.target.value, document: '' })
+    setErrors({ ...errors, document: undefined })
+  }
+
+  // The phone and the document only accept digits: anything else is dropped as you type.
+  function updateDigits(field, maxLength) {
+    return (event) => {
+      setForm({ ...form, [field]: onlyDigits(event.target.value, maxLength) })
+      setErrors({ ...errors, [field]: undefined })
+    }
   }
 
   async function handleSubmit(event) {
     event.preventDefault()
     setMessage('')
 
+    if (isCompany && form.document.length !== 12) {
+      setErrors({ document: 'El RUT tiene que tener 12 dígitos, solo números.' })
+      return
+    }
+    if (!isCompany && (form.document.length < 7 || form.document.length > 8)) {
+      setErrors({ document: 'La CI tiene que tener 7 u 8 dígitos, solo números.' })
+      return
+    }
     if (form.phone.length !== 9) {
       setErrors({ phone: 'El teléfono tiene que tener 9 dígitos, solo números.' })
       return
@@ -102,13 +121,13 @@ function RegisterBusinessPage() {
           <div className="choice">
             <label className={form.personType === 'INDIVIDUAL' ? 'selected' : ''}>
               <input type="radio" name="personType" value="INDIVIDUAL"
-                checked={form.personType === 'INDIVIDUAL'} onChange={update('personType')} />
+                checked={form.personType === 'INDIVIDUAL'} onChange={updatePersonType} />
               <strong>Persona física</strong>
               <span>Un particular, se identifica con CI</span>
             </label>
             <label className={isCompany ? 'selected' : ''}>
               <input type="radio" name="personType" value="COMPANY"
-                checked={isCompany} onChange={update('personType')} />
+                checked={isCompany} onChange={updatePersonType} />
               <strong>Persona jurídica</strong>
               <span>Una empresa, se identifica con RUT</span>
             </label>
@@ -119,8 +138,9 @@ function RegisterBusinessPage() {
           <legend>Identificación</legend>
           <div className="grid">
             <Field label={isCompany ? 'RUT' : 'CI'} error={errors.document}
-              hint={isCompany ? '12 dígitos' : 'Con o sin puntos y guion'}>
-              <input value={form.document} onChange={update('document')} inputMode="numeric" />
+              hint={isCompany ? '12 dígitos, solo números' : '7 u 8 dígitos, sin puntos ni guion'}>
+              <input value={form.document} onChange={updateDigits('document', documentLength)} inputMode="numeric"
+                maxLength={documentLength} />
             </Field>
             <Field label="Razón social" error={errors.legalName}>
               <input value={form.legalName} onChange={update('legalName')} />
@@ -137,7 +157,7 @@ function RegisterBusinessPage() {
           <legend>Contacto y ubicación</legend>
           <div className="grid">
             <Field label="Teléfono" error={errors.phone} hint="9 dígitos, por ejemplo 099123456">
-              <input value={form.phone} onChange={updatePhone} type="tel" inputMode="numeric" maxLength={9} />
+              <input value={form.phone} onChange={updateDigits('phone', 9)} type="tel" inputMode="numeric" maxLength={9} />
             </Field>
             <Field label="Correo electrónico" error={errors.email} hint="Con este correo vas a iniciar sesión">
               <input value={form.email} onChange={update('email')} type="email" />

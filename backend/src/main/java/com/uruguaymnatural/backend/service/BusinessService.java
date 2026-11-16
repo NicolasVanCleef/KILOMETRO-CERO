@@ -155,17 +155,17 @@ public class BusinessService {
     }
 
     /**
-     * Keeps only the digits. A CI has 7 or 8 digits and a RUT 12 (RN-02).
+     * Only digits, without dots, dashes or letters: a CI has 7 or 8 and a RUT exactly 12 (RN-02).
      */
     private static String normalizeDocument(PersonType personType, String document) {
-        String digits = document.replaceAll("[^0-9]", "");
-        if (personType == PersonType.INDIVIDUAL && (digits.length() < 7 || digits.length() > 8)) {
-            throw new InvalidDataException("document", "La CI tiene que tener 7 u 8 dígitos.");
+        String value = document.trim();
+        if (personType == PersonType.INDIVIDUAL && !value.matches("\\d{7,8}")) {
+            throw new InvalidDataException("document", "La CI tiene que tener 7 u 8 dígitos, solo números.");
         }
-        if (personType == PersonType.COMPANY && digits.length() != 12) {
-            throw new InvalidDataException("document", "El RUT tiene que tener 12 dígitos.");
+        if (personType == PersonType.COMPANY && !value.matches("\\d{12}")) {
+            throw new InvalidDataException("document", "El RUT tiene que tener 12 dígitos, solo números.");
         }
-        return digits;
+        return value;
     }
 
     /**

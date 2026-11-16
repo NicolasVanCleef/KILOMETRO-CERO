@@ -3,6 +3,7 @@ import { Link, useParams, useSearchParams } from 'react-router-dom'
 import { api, formatClock, formatDay, formatMoney, formatTime } from '../api.js'
 import Field from '../components/Field.jsx'
 import Countdown from '../components/Countdown.jsx'
+import { onlyDigits } from '../digits.js'
 
 const EMPTY_PARTICIPANT = { firstName: '', lastName: '', birthDate: '', document: '' }
 
@@ -65,7 +66,9 @@ function BookingPage() {
 
   function updateParticipant(index, field) {
     return (event) => {
-      setParticipants(participants.map((p, i) => (i === index ? { ...p, [field]: event.target.value } : p)))
+      // The cédula only accepts digits, up to 8.
+      const value = field === 'document' ? onlyDigits(event.target.value, 8) : event.target.value
+      setParticipants(participants.map((p, i) => (i === index ? { ...p, [field]: value } : p)))
       setErrors({ ...errors, [`participants[${index}].${field}`]: undefined })
     }
   }
@@ -188,8 +191,10 @@ function BookingPage() {
                 <Field label="Fecha de nacimiento" error={errors[`participants[${index}].birthDate`]}>
                   <input value={participant.birthDate} onChange={updateParticipant(index, 'birthDate')} type="date" />
                 </Field>
-                <Field label="Cédula" error={errors[`participants[${index}].document`]}>
-                  <input value={participant.document} onChange={updateParticipant(index, 'document')} />
+                <Field label="Cédula" error={errors[`participants[${index}].document`]}
+                  hint="7 u 8 dígitos, solo números">
+                  <input value={participant.document} onChange={updateParticipant(index, 'document')}
+                    inputMode="numeric" maxLength={8} />
                 </Field>
               </div>
             </fieldset>

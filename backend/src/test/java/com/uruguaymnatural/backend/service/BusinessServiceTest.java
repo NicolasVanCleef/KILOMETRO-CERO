@@ -54,7 +54,7 @@ class BusinessServiceTest {
 
     @Test
     void registersIndividualAsPendingWithDisabledAccount() {
-        BusinessDetailDto result = businessService.register(individual("1.234.567-8", "Ana@Mail.com"));
+        BusinessDetailDto result = businessService.register(individual("12345678", "Ana@Mail.com"));
 
         ArgumentCaptor<User> savedUser = ArgumentCaptor.forClass(User.class);
         verify(userRepository).save(savedUser.capture());
@@ -95,6 +95,31 @@ class BusinessServiceTest {
     }
 
     @Test
+    void ciWithDotsOrDashIsRejected() {
+        InvalidDataException e = assertThrows(InvalidDataException.class,
+                () -> businessService.register(individual("1.234.567-8", "ana@mail.com")));
+        assertEquals("document", e.getField());
+        verify(businessRepository, never()).save(any());
+    }
+
+    @Test
+    void rutMustBeExactlyTwelveDigits() {
+        assertThrows(InvalidDataException.class,
+                () -> businessService.register(company("21123456001", "Juan Pérez")));
+        assertThrows(InvalidDataException.class,
+                () -> businessService.register(company("2112345600188", "Juan Pérez")));
+        verify(businessRepository, never()).save(any());
+    }
+
+    @Test
+    void rutWithLettersOrSpacesIsRejected() {
+        assertThrows(InvalidDataException.class,
+                () -> businessService.register(company("21123456001a8", "Juan Pérez")));
+        assertThrows(InvalidDataException.class,
+                () -> businessService.register(company("21 123456 0018", "Juan Pérez")));
+    }
+
+    @Test
     void companyNeedsRepresentative() {
         InvalidDataException e = assertThrows(InvalidDataException.class,
                 () -> businessService.register(company("211234560018", " ")));
@@ -103,7 +128,7 @@ class BusinessServiceTest {
 
     @Test
     void registersCompanyWithRut() {
-        BusinessDetailDto result = businessService.register(company("21 123456 0018", "Juan Pérez"));
+        BusinessDetailDto result = businessService.register(company("211234560018", "Juan Pérez"));
 
         assertEquals(PersonType.COMPANY, result.personType());
         assertEquals("211234560018", result.document());

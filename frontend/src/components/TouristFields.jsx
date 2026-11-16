@@ -1,3 +1,4 @@
+import { onlyDigits } from '../digits.js'
 import Field from './Field.jsx'
 
 const LANGUAGES = ['Español', 'Inglés', 'Portugués', 'Francés', 'Alemán', 'Italiano', 'Otro']
@@ -18,14 +19,18 @@ function TouristFields({ form, errors, update }) {
       <Field label="Fecha de nacimiento" error={errors.birthDate}>
         <input value={form.birthDate} onChange={update('birthDate')} type="date" />
       </Field>
-      <Field label="Idioma de preferencia" error={errors.preferredLanguage}>
+      {/* The language is kept as a profile data, as the client asked; the page itself is only in
+          Spanish because the client left translations out for now (RNF-18). */}
+      <Field label="Idioma de preferencia" error={errors.preferredLanguage}
+        hint="Por ahora la página está solo en español">
         <select value={form.preferredLanguage} onChange={update('preferredLanguage')}>
           <option value="">Elegí…</option>
           {LANGUAGES.map((language) => <option key={language}>{language}</option>)}
         </select>
       </Field>
-      <Field label="Documento" error={errors.document} hint="Cédula o pasaporte">
-        <input value={form.document} onChange={update('document')} />
+      <Field label="Cédula" error={errors.document} hint="7 u 8 dígitos, solo números">
+        <input value={form.document} inputMode="numeric" maxLength={8}
+          onChange={(event) => update('document')({ target: { value: onlyDigits(event.target.value, 8) } })} />
       </Field>
     </div>
   )
