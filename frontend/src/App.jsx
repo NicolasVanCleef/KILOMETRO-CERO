@@ -14,6 +14,7 @@ import TouristProfilePage from './pages/TouristProfilePage.jsx'
 import BusinessProfilePage from './pages/BusinessProfilePage.jsx'
 import RegisterBusinessPage from './pages/RegisterBusinessPage.jsx'
 import AdminBusinessesPage from './pages/AdminBusinessesPage.jsx'
+import AdminActivitiesPage from './pages/AdminActivitiesPage.jsx'
 import AdminCatalogPage from './pages/AdminCatalogPage.jsx'
 import ProviderActivitiesPage from './pages/ProviderActivitiesPage.jsx'
 import ActivityFormPage from './pages/ActivityFormPage.jsx'
@@ -106,6 +107,8 @@ function App() {
             element={<OnlyFor role={role} allowed="PROVIDER"><BusinessProfilePage /></OnlyFor>} />
           <Route path="/admin/emprendimientos"
             element={<OnlyFor role={role} allowed="ADMIN"><AdminBusinessesPage /></OnlyFor>} />
+          <Route path="/admin/actividades"
+            element={<OnlyFor role={role} allowed="ADMIN"><AdminActivitiesPage /></OnlyFor>} />
           <Route path="/admin/catalogo"
             element={<OnlyFor role={role} allowed="ADMIN"><AdminCatalogPage /></OnlyFor>} />
           <Route path="/prestador/actividades"

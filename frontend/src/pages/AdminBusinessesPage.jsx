@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react'
 import { api, formatDate, PERSON_TYPE_LABELS, STATUS_LABELS } from '../api.js'
 
-const TABS = ['PENDING', 'APPROVED', 'REJECTED']
-const TAB_LABELS = { PENDING: 'Pendientes', APPROVED: 'Aprobados', REJECTED: 'Rechazados' }
+const TABS = ['PENDING', 'APPROVED', 'REJECTED', 'REMOVED']
+const TAB_LABELS = { PENDING: 'Pendientes', APPROVED: 'Aprobados', REJECTED: 'Rechazados', REMOVED: 'Eliminados' }
 
 // CU-02: the administrator reviews new businesses and approves or rejects them.
+// CU-23: the administrator sees the approved providers and can remove one.
 function AdminBusinessesPage() {
   const [status, setStatus] = useState('PENDING')
   const [businesses, setBusinesses] = useState([])
@@ -73,6 +74,20 @@ function AdminBusinessesPage() {
     }
   }
 
+  async function remove() {
+    try {
+      await api.removeBusiness(selected.id)
+      setNotice({
+        type: 'info',
+        text: `Eliminaste a "${selected.legalName}". Ya no puede iniciar sesión, sus actividades dejaron de estar publicadas y a los turistas que habían pagado se les devolvió el 100 %.`,
+      })
+      setSelected(null)
+      reloadList()
+    } catch (e) {
+      setError(e.message)
+    }
+  }
+
   return (
     <div className="page">
       <h1>Emprendimientos</h1>
@@ -123,7 +138,7 @@ function AdminBusinessesPage() {
 
         <aside className="detail">
           {selected
-            ? <BusinessDetail key={selected.id} business={selected} onReview={review} />
+            ? <BusinessDetail key={selected.id} business={selected} onReview={review} onRemove={remove} />
             : <p className="muted">Elegí un emprendimiento de la lista para ver su detalle.</p>}
         </aside>
       </div>
@@ -131,7 +146,7 @@ function AdminBusinessesPage() {
   )
 }
 
-function BusinessDetail({ business, onReview }) {
+function BusinessDetail({ business, onReview, onRemove }) {
   const [confirming, setConfirming] = useState(null)
   const isCompany = business.personType === 'COMPANY'
 
@@ -166,6 +181,24 @@ function BusinessDetail({ business, onReview }) {
 
       <h3>Descripción de los servicios</h3>
       <p className="description">{business.description}</p>
+
+      {business.status === 'APPROVED' && (
+        <div className="actions">
+          {confirming === null && (
+            <button className="button danger" onClick={() => setConfirming('remove')}>Eliminar prestador</button>
+          )}
+          {confirming === 'remove' && (
+            <div className="confirm">
+              <p>
+                ¿Eliminar a este prestador? No va a poder iniciar sesión, sus actividades dejan de estar
+                publicadas y a los turistas que pagaron se les devuelve el 100 %.
+              </p>
+              <button className="button danger" onClick={onRemove}>Sí, eliminar</button>
+              <button className="button secondary" onClick={() => setConfirming(null)}>Cancelar</button>
+            </div>
+          )}
+        </div>
+      )}
 
       {business.status === 'PENDING' && (
         <div className="actions">

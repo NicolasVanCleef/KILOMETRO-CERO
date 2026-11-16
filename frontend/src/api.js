@@ -57,6 +57,9 @@ export const api = {
   getBusiness: (id) => request(`/admin/businesses/${id}`),
   approveBusiness: (id) => post(`/admin/businesses/${id}/approve`),
   rejectBusiness: (id) => post(`/admin/businesses/${id}/reject`),
+  removeBusiness: (id) => request(`/admin/businesses/${id}`, { method: 'DELETE' }),
+  listAllActivities: () => request('/admin/activities'),
+  removeActivity: (id) => request(`/admin/activities/${id}`, { method: 'DELETE' }),
 
   // Tags and equipment (the lists are public; only the administrator changes them)
   listTags: () => request('/tags'),
@@ -121,6 +124,7 @@ export const STATUS_LABELS = {
   PENDING: 'Pendiente',
   APPROVED: 'Aprobado',
   REJECTED: 'Rechazado',
+  REMOVED: 'Eliminado',
 }
 
 export function formatDate(isoDate) {

@@ -46,9 +46,15 @@ const ACTIONS = {
   ADMIN: [
     {
       title: 'Emprendimientos',
-      text: 'Revisá los emprendimientos nuevos y aceptalos o rechazalos.',
+      text: 'Revisá los emprendimientos nuevos, aceptalos o rechazalos, y controlá a los prestadores.',
       to: '/admin/emprendimientos',
       button: 'Ver emprendimientos',
+    },
+    {
+      title: 'Actividades',
+      text: 'Mirá las actividades publicadas y eliminá las que sean inapropiadas.',
+      to: '/admin/actividades',
+      button: 'Ver actividades',
     },
     {
       title: 'Etiquetas y equipamiento',

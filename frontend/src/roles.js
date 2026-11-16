@@ -24,6 +24,7 @@ export const ROLES = {
     label: 'Administrador',
     links: [
       { to: '/admin/emprendimientos', label: 'Emprendimientos' },
+      { to: '/admin/actividades', label: 'Actividades' },
       { to: '/admin/catalogo', label: 'Etiquetas y equipamiento' },
     ],
   },

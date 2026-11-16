@@ -868,3 +868,8 @@ dl.inline dd {
   border-radius: 6px;
   margin-top: 8px;
 }
+
+.badge.removed {
+  background: #eceff1;
+  color: #455a64;
+}

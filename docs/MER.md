@@ -68,7 +68,7 @@ erDiagram
         string departamento
         string localidad
         string direccion "opcional"
-        string estado "PENDIENTE, APROBADO, RECHAZADO"
+        string estado "PENDIENTE, APROBADO, RECHAZADO, ELIMINADO"
         datetime fecha_creacion
     }
 
@@ -215,6 +215,10 @@ documento" [A]. `usuario_id` es único: cada usuario tiene como máximo un perfi
   `descripcion`, `departamento`, `localidad` y `direccion` (texto libre, sin catálogo cerrado [A]).
 - **Aprobación:** `estado` implementa el flujo: el admin ve "emprendimientos pendientes",
   acepta o deniega [A], y `usuario.habilitado` queda en `false` hasta `estado = APROBADO`.
+- **Eliminación:** el admin puede "ver detalle" de los prestadores y "eliminarlos (ej: si no
+  cumplen)" [A]. No se borra la fila, porque sus actividades tienen reservas y pagos que hay
+  que poder rastrear: `estado` pasa a `ELIMINADO` y `usuario.habilitado` a `false`.
+  *El estado `ELIMINADO` es una interpretación nuestra para cumplir ese pedido.*
 - **Un emprendimiento por usuario:** "como persona fisica solo podes tener uno"; para otro
   emprendimiento se usa otro usuario [A]. `usuario_id` es único.
 

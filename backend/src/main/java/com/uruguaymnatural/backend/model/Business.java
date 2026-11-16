@@ -118,6 +118,13 @@ public class Business {
         this.user.setEnabled(false);
     }
 
+    /** The administrator removes the provider: they can no longer log in (CU-23). */
+    public void remove() {
+        this.status = BusinessStatus.REMOVED;
+        this.reviewedAt = LocalDateTime.now();
+        this.user.setEnabled(false);
+    }
+
     public boolean isApproved() {
         return status == BusinessStatus.APPROVED;
     }

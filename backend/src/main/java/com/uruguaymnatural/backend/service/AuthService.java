@@ -77,6 +77,9 @@ public class AuthService {
             if (status == BusinessStatus.REJECTED) {
                 return "Tu emprendimiento no fue aprobado, así que no podés iniciar sesión.";
             }
+            if (status == BusinessStatus.REMOVED) {
+                return "Uruguay Mnatural dio de baja tu emprendimiento, así que no podés iniciar sesión.";
+            }
         }
         return "Tu cuenta está deshabilitada.";
     }
