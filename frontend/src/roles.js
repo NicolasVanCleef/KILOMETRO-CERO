@@ -1,5 +1,5 @@
 // What each kind of user sees in the menu (actors of the ERS, section 5.1).
-// A visitor is anyone who has not logged in.
+// A visitor is anyone who has not logged in. Everyone also sees "Actividades"; the logo goes home.
 
 export const ROLES = {
   VISITOR: {
@@ -24,8 +24,8 @@ export const ROLES = {
     label: 'Administrador',
     links: [
       { to: '/admin/emprendimientos', label: 'Emprendimientos' },
-      { to: '/admin/actividades', label: 'Actividades' },
-      { to: '/admin/catalogo', label: 'Etiquetas y equipamiento' },
+      { to: '/admin/actividades', label: 'Moderación' },
+      { to: '/admin/catalogo', label: 'Catálogo' },
     ],
   },
 }

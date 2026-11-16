@@ -65,26 +65,36 @@ function App() {
     <>
       <header className="topbar">
         <div className="topbar-inner">
-          <NavLink to="/" className="brand">
-            Uruguay <span>Mnatural</span>
-          </NavLink>
-          <nav className="nav">
-            <NavLink to="/" end>Inicio</NavLink>
-            <NavLink to="/actividades">Actividades</NavLink>
+          <Link to="/" className="brand">
+            <img src="/logos/icon.png" alt="" />
+            <span className="brand-name">
+              <strong>Uruguay Mnatural</strong>
+              <small>por Kilómetro Cero</small>
+            </span>
+          </Link>
+          <nav className="nav main" aria-label="Principal">
+            <NavLink to="/actividades" end>Actividades</NavLink>
             {ROLES[role].links.map((link) => (
               <NavLink key={link.to} to={link.to}>{link.label}</NavLink>
             ))}
           </nav>
           {session ? (
-            <div className="current-role">
-              <span title={session.user.email}>{session.user.displayName} · {ROLES[role].label}</span>
-              <button onClick={logout}>Cerrar sesión</button>
+            <div className="account">
+              <span className="user-chip" title={session.user.email}>
+                <span className="avatar" aria-hidden="true">{session.user.displayName.charAt(0).toUpperCase()}</span>
+                <span>
+                  <strong>{session.user.displayName}</strong>
+                  {/* The administrator's name is already "Administrador": do not repeat it. */}
+                  {session.user.displayName !== ROLES[role].label && <small>{ROLES[role].label}</small>}
+                </span>
+              </span>
+              <button className="button secondary small" onClick={logout}>Cerrar sesión</button>
             </div>
           ) : (
-            <nav className="nav">
-              <NavLink to="/ingresar">Iniciar sesión</NavLink>
-              <NavLink to="/registro">Registrarse</NavLink>
-            </nav>
+            <div className="account">
+              <Link to="/ingresar" className="button secondary">Iniciar sesión</Link>
+              <Link to="/registro" className="button">Crear cuenta</Link>
+            </div>
           )}
         </div>
       </header>
@@ -130,6 +140,13 @@ function App() {
           <Route path="*" element={<p className="page">Página no encontrada.</p>} />
         </Routes>
       </main>
+
+      <footer className="footer">
+        <div className="footer-inner">
+          <img src="/logos/full-color.png" alt="Kilómetro Cero · Punto de partida" />
+          <span>Uruguay Mnatural · Proyecto TIC 2026</span>
+        </div>
+      </footer>
     </>
   )
 }

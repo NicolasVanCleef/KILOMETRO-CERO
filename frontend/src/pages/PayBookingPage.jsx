@@ -194,7 +194,7 @@ function PayBookingPage() {
                   <div className="grid">
                     <Field label="Número de tarjeta" error={errors.cardNumber}>
                       <input value={form.cardNumber} onChange={update('cardNumber', groupCard)} inputMode="numeric"
-                        autoComplete="off" placeholder="4111 1111 1111 1111" />
+                        autoComplete="off" placeholder={testCards.cards[0].number} />
                     </Field>
                     <Field label="Nombre en la tarjeta" error={errors.holder}>
                       <input value={form.holder} onChange={update('holder')} autoComplete="off" />
@@ -218,7 +218,7 @@ function PayBookingPage() {
 
             {message && <p className="alert error">{message}</p>}
 
-            <button className="button" type="submit" disabled={paying}>
+            <button className="button accent" type="submit" disabled={paying}>
               {paying ? 'Procesando…' : `Pagar ${formatMoney(booking.total)}`}
             </button>
           </form>

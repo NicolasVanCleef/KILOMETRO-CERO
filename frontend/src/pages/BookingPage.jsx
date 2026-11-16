@@ -37,6 +37,7 @@ function BookingPage() {
     api.getOwnBooking(resumeId)
       .then((held) => {
         setBooking(held)
+      window.scrollTo(0, 0)
         setParticipants(Array.from({ length: held.participantCount }, () => ({ ...EMPTY_PARTICIPANT })))
       })
       .catch((e) => setMessage(e.message))
@@ -77,6 +78,7 @@ function BookingPage() {
     try {
       const data = participants.map((p) => ({ ...p, birthDate: p.birthDate || null }))
       setBooking(await api.saveParticipants(booking.id, data))
+      window.scrollTo(0, 0)
       setErrors({})
     } catch (e) {
       setErrors(e.fieldErrors)
@@ -157,7 +159,7 @@ function BookingPage() {
           <Countdown until={booking.paymentDeadline} onEnd={() => setTimeUp(true)} />
           ). La reserva se confirma cuando se aprueba el pago.
         </p>
-        <Link to={`/mis-reservas/${booking.id}/pagar`} className="button">Ir a pagar</Link>
+        <Link to={`/mis-reservas/${booking.id}/pagar`} className="button accent">Ir a pagar</Link>
       </div>
     )
   }
@@ -230,7 +232,7 @@ function BookingPage() {
 
         {message && <p className="alert error">{message}</p>}
 
-        <button className="button" type="submit" disabled={sending || !schedule.bookable}>
+        <button className="button accent" type="submit" disabled={sending || !schedule.bookable}>
           {sending ? 'Reservando…' : 'Reservar lugares'}
         </button>
         <p className="note">
