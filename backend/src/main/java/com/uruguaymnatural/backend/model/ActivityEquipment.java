@@ -63,4 +63,8 @@ public class ActivityEquipment {
     public EquipmentRelation getRelation() {
         return relation;
     }
+
+    public void setRelation(EquipmentRelation relation) {
+        this.relation = relation;
+    }
 }

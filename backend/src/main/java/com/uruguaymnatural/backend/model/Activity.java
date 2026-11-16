@@ -2,9 +2,12 @@ package com.uruguaymnatural.backend.model;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -152,11 +155,22 @@ public class Activity {
         this.tags.addAll(newTags);
     }
 
-    /** Replaces the whole equipment list of the activity. */
+    /**
+     * Replaces the equipment list of the activity. The rows of equipment that stays are kept
+     * (only whether it is required or provided may change): deleting and re-adding the same
+     * equipment in one save breaks the unique (activity, equipment) rule, because the database
+     * receives the new rows before the deleted ones.
+     */
     public void setEquipment(List<Equipment> required, List<Equipment> provided) {
-        this.equipment.clear();
-        required.forEach(item -> this.equipment.add(new ActivityEquipment(this, item, EquipmentRelation.REQUIRED)));
-        provided.forEach(item -> this.equipment.add(new ActivityEquipment(this, item, EquipmentRelation.PROVIDED)));
+        Map<Long, EquipmentRelation> wanted = new LinkedHashMap<>();
+        required.forEach(item -> wanted.put(item.getId(), EquipmentRelation.REQUIRED));
+        provided.forEach(item -> wanted.put(item.getId(), EquipmentRelation.PROVIDED));
+
+        this.equipment.removeIf(row -> !wanted.containsKey(row.getEquipment().getId()));
+        this.equipment.forEach(row -> row.setRelation(wanted.remove(row.getEquipment().getId())));
+        Stream.concat(required.stream(), provided.stream())
+                .filter(item -> wanted.containsKey(item.getId()))
+                .forEach(item -> this.equipment.add(new ActivityEquipment(this, item, wanted.get(item.getId()))));
     }
 
     public void deactivate() {
