@@ -400,3 +400,9 @@ El alcance exacto de cada parte se define con su prompt y se controla contra [E]
 | # | Fecha | Prompt (textual) | Qué generó |
 |---|-------|------------------|------------|
 | P10.1 | 15/11/2026 | podes terminar el proyecto? hacelo de a partes asi podemos ir commiteando | API pública en /api/public con las cinco operaciones del enunciado: listar emprendimientos, actividades de un día por departamento / localidad, top 3 del mes por departamento, verificar un emprendimiento (por id o por CI / RUT) y buscar por palabra clave. Pronóstico del clima en el detalle de la actividad con la API pública Open-Meteo; si no responde, la página se muestra igual. Documentación de todos los endpoints en docs/API.md. 15 tests nuevos. |
+
+### Manuales de usuario (RNF-22)
+
+| # | Fecha | Prompt (textual) | Qué generó |
+|---|-------|------------------|------------|
+| M.1 | 22/11/2026 | dale, arranca por los manuales y pusheá | Tres manuales de usuario en docs/, escritos a partir de las pantallas del frontend: Manual_Turista.md (usuario final: buscar, crear cuenta, reservar con los 10 minutos de retención, pagar con las tarjetas de prueba, mis reservas, cancelar, valorar), Manual_Prestador.md (registrar el emprendimiento, mi emprendimiento, actividades, fechas, reservas de cada fecha, responder valoraciones) y Manual_Administrador.md (aceptar, rechazar y eliminar emprendimientos, moderar actividades, etiquetas y equipamiento). Antes se pusheó el commit pendiente del error 500. |
