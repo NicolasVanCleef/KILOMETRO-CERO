@@ -5,7 +5,7 @@ principales, uno por pantalla y para los tres roles. Muestran **qué hay en cada
 está**: menú, formularios, tablas, botones y mensajes. El diseño visual final (colores, logos de
 Kilómetro Cero, ilustraciones) está en el frontend.
 
-> Estos wireframes se dibujaron el 22/11/2026 a partir de las pantallas ya construidas, para
+> Estos wireframes se dibujaron a partir de las pantallas ya construidas, para
 > documentarlas con el formato de mockup. Los textos son los mismos que usa la página; los datos
 > (nombres, montos, fechas) son de ejemplo.
 
