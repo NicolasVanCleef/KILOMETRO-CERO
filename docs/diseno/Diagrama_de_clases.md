@@ -21,7 +21,15 @@ Imagen vectorial: [`img/Diagrama_de_clases.svg`](img/Diagrama_de_clases.svg)
 Los estados y tipos fijos son enumeraciones de Java, guardadas en la base como texto
 (`@Enumerated(EnumType.STRING)`).
 
-![Enumeraciones](img/Diagrama_de_clases_enumeraciones.png)
+| Enumeración | Se usa en | Valores |
+|---|---|---|
+| `Role` | `User.role` | TOURIST (turista), PROVIDER (prestador), ADMIN (administrador) |
+| `PersonType` | `Business.personType` | INDIVIDUAL (persona física, con CI), COMPANY (persona jurídica, con RUT) |
+| `BusinessStatus` | `Business.status` | PENDING (pendiente), APPROVED (aprobado), REJECTED (rechazado), REMOVED (eliminado) |
+| `EquipmentRelation` | `ActivityEquipment.relation` | REQUIRED (lo lleva el turista), PROVIDED (lo da el prestador) |
+| `ScheduleStatus` | `ActivitySchedule.status` | SCHEDULED (programada), CANCELLED (cancelada) |
+| `BookingStatus` | `Booking.status` | PENDING_PAYMENT (pendiente de pago), CONFIRMED (confirmada), EXPIRED (expirada), CANCELLED (cancelada) |
+| `PaymentStatus` | `Payment.status` | PENDING (no se completó), APPROVED (aprobado), REJECTED (rechazado), REFUNDED (reembolsado) |
 
 ## Cómo leer el diagrama
 
@@ -228,51 +236,5 @@ classDiagram
     Tourist "1" -- "0..*" Review : escribe
 ```
 
-```mermaid
-classDiagram
-    direction LR
-    class Role {
-        <<enumeration>>
-        TOURIST
-        PROVIDER
-        ADMIN
-    }
-    class PersonType {
-        <<enumeration>>
-        INDIVIDUAL
-        COMPANY
-    }
-    class BusinessStatus {
-        <<enumeration>>
-        PENDING
-        APPROVED
-        REJECTED
-        REMOVED
-    }
-    class EquipmentRelation {
-        <<enumeration>>
-        REQUIRED
-        PROVIDED
-    }
-    class ScheduleStatus {
-        <<enumeration>>
-        SCHEDULED
-        CANCELLED
-    }
-    class BookingStatus {
-        <<enumeration>>
-        PENDING_PAYMENT
-        CONFIRMED
-        EXPIRED
-        CANCELLED
-    }
-    class PaymentStatus {
-        <<enumeration>>
-        PENDING
-        APPROVED
-        REJECTED
-        REFUNDED
-    }
-```
 
 </details>
