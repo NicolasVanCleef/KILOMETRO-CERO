@@ -406,3 +406,9 @@ El alcance exacto de cada parte se define con su prompt y se controla contra [E]
 | # | Fecha | Prompt (textual) | Qué generó |
 |---|-------|------------------|------------|
 | M.1 | 22/11/2026 | dale, arranca por los manuales y pusheá | Tres manuales de usuario en docs/, escritos a partir de las pantallas del frontend: Manual_Turista.md (usuario final: buscar, crear cuenta, reservar con los 10 minutos de retención, pagar con las tarjetas de prueba, mis reservas, cancelar, valorar), Manual_Prestador.md (registrar el emprendimiento, mi emprendimiento, actividades, fechas, reservas de cada fecha, responder valoraciones) y Manual_Administrador.md (aceptar, rechazar y eliminar emprendimientos, moderar actividades, etiquetas y equipamiento). Antes se pusheó el commit pendiente del error 500. |
+
+### Documentos de diseño del sistema
+
+| # | Fecha | Prompt (textual) | Qué generó |
+|---|-------|------------------|------------|
+| D.1 | 22/11/2026 | hacelos si | Los documentos de diseño que pide la lista de entregables del enunciado y faltaban, en docs/diseno/, hechos a partir del código: Arquitectura.md (componentes, MVC en capas, seguridad, decisiones de diseño y ejecución), Diagrama_de_clases.md (UML de las entidades del paquete model y sus enumeraciones), Diagramas_de_secuencia.md (iniciar sesión, reservar, pagar, aprobar emprendimiento, cancelar fecha y vencimiento automático), Diagramas_de_flujo.md (reservar y pagar, emprendimiento, cancelar reserva y estados de una reserva) y Mockups.md (10 wireframes de las pantallas principales de los tres roles, dibujados a partir de las pantallas ya construidas). Diagramas en PNG y SVG con su fuente en Mermaid. |
