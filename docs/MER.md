@@ -1,7 +1,7 @@
 # Modelo Entidad-Relación (MER) — Uruguay Mnatural
 
 Basado en el enunciado del proyecto (`Proyecto TIC 2026.pdf`) y en las reglas de negocio
-relevadas en el acta de reunión con el cliente del 14/09/2026.
+relevadas en el acta de reunión con el cliente.
 
 > **Nota sobre idioma:** este documento (y el diagrama) usan nombres en español, como el
 > resto de la documentación del proyecto. El código Java usa los mismos nombres traducidos
@@ -195,7 +195,7 @@ las claves foráneas (las reemplazan las relaciones), y `ACTIVIDAD_ETIQUETA` /
 ## Entidades y justificación de negocio
 
 Cada decisión cita su fuente: **[E]** = enunciado (`Proyecto TIC 2026.pdf`),
-**[A]** = acta de reunión con el cliente (14/09/2026).
+**[A]** = acta de reunión con el cliente.
 
 ### USUARIO
 Tabla de autenticación base, compartida por los tres tipos de usuario (`rol`). Separarla de
