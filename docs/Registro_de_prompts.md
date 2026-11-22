@@ -413,3 +413,9 @@ El alcance exacto de cada parte se define con su prompt y se controla contra [E]
 |---|-------|------------------|------------|
 | D.1 | 22/11/2026 | hacelos si | Los documentos de diseño que pide la lista de entregables del enunciado y faltaban, en docs/diseno/, hechos a partir del código: Arquitectura.md (componentes, MVC en capas, seguridad, decisiones de diseño y ejecución), Diagrama_de_clases.md (UML de las entidades del paquete model y sus enumeraciones), Diagramas_de_secuencia.md (iniciar sesión, reservar, pagar, aprobar emprendimiento, cancelar fecha y vencimiento automático), Diagramas_de_flujo.md (reservar y pagar, emprendimiento, cancelar reserva y estados de una reserva) y Mockups.md (10 wireframes de las pantallas principales de los tres roles, dibujados a partir de las pantallas ya construidas). Diagramas en PNG y SVG con su fuente en Mermaid. |
 | D.2 | 22/11/2026 | okay hacelo en un documento que lo tengo que subir *(respuestas: solo diseño, en PDF)* | docs/Documentos_de_diseno_Uruguay_Mnatural.pdf: portada con el equipo, índice y los seis documentos de diseño (MER, arquitectura, diagrama de clases, secuencia, flujo y mockups); los diagramas anchos en hojas horizontales. Las enumeraciones del diagrama de clases pasaron a ser una tabla. |
+
+### Manuales de usuario en PDF
+
+| # | Fecha | Prompt (textual) | Qué generó |
+|---|-------|------------------|------------|
+| M.2 | 22/11/2026 | Hacelos como pdfs | docs/Manual_Turista.pdf, docs/Manual_Prestador.pdf y docs/Manual_Administrador.pdf, uno por manual, con portada (rol y equipo), índice y el contenido de cada Manual_*.md, con el mismo estilo que el PDF de diseño. |
