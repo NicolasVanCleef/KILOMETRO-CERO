@@ -419,3 +419,9 @@ El alcance exacto de cada parte se define con su prompt y se controla contra [E]
 | # | Fecha | Prompt (textual) | Qué generó |
 |---|-------|------------------|------------|
 | M.2 | 22/11/2026 | Hacelos como pdfs | docs/Manual_Turista.pdf, docs/Manual_Prestador.pdf y docs/Manual_Administrador.pdf, uno por manual, con portada (rol y equipo), índice y el contenido de cada Manual_*.md, con el mismo estilo que el PDF de diseño. |
+
+### Documento de Visión
+
+| # | Fecha | Prompt (textual) | Qué generó |
+|---|-------|------------------|------------|
+| V.1 | 22/11/2026 | si esta es nuestra vision que mencionamos en el acta de fundacion *(visión del acta)* haceme un documento de vision | docs/Documento_de_Vision.md y docs/Documento_de_Vision_Uruguay_Mnatural.pdf: el documento de visión actualizado al sistema construido (misma estructura que el Documento_de_Vision_Uruguay_Mnatural.docx original), con una sección nueva que parte de la visión de Kilómetro Cero y muestra cómo la cumple el producto; sin fechas de actas. |
